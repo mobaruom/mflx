@@ -1,16 +1,188 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="fr">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Emp&ecirc;cher le clic droit</title>
-    <script type="text/javascript">
-    //<!--
-        document.oncontextmenu = new Function("return false");
-    //-->
-    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Bento Scolaire</title>
+    <style>
+        :root {
+            --bg: #f5f5f7;
+            --card: #ffffff;
+            --accent: #007aff;
+            --text: #1d1d1f;
+            --text-secondary: #86868b;
+        }
+
+        body {
+            background-color: var(--bg);
+            font-family: -apple-system, system-ui, sans-serif;
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-auto-rows: minmax(120px, auto);
+            gap: 16px;
+        }
+
+        .bento-item {
+            background: var(--card);
+            border-radius: 22px;
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease;
+        }
+
+        .bento-item:active { transform: scale(0.98); }
+
+        /* Tailles */
+        .full { grid-column: span 2; }
+        .tall { grid-row: span 2; }
+
+        h2 { margin: 0 0 8px 0; font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+        .big-text { font-size: 1.4rem; font-weight: 700; margin: 0; line-height: 1.2; }
+        
+        #event-list { list-style: none; padding: 0; margin: 0; }
+        #event-list li { 
+            padding: 12px 0; 
+            border-bottom: 1px solid #f2f2f2;
+            font-size: 0.95rem;
+        }
+        #event-list li:last-child { border: none; }
+
+        /* Input Style */
+        .setup-ui { text-align: center; padding: 40px 20px; }
+        input { 
+            width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #d2d2d7; 
+            margin-bottom: 15px; font-size: 1rem; outline: none; box-sizing: border-box;
+        }
+        button { 
+            width: 100%; background: var(--accent); color: white; border: none; 
+            padding: 15px; border-radius: 12px; font-weight: 600; cursor: pointer; 
+        }
+
+        .hidden { display: none; }
+        .status-dot { height: 8px; width: 8px; background: #34c759; border-radius: 50%; display: inline-block; margin-right: 5px; }
+    </style>
 </head>
 <body>
-Faites un clic droit, &ccedil;a ne fonctionnera pas.<br />
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam non urna. Ut odio lorem, suscipit eget, sollicitudin a, adipiscing eget, dui. Proin tempus. Aliquam commodo cursus mi. Aliquam aliquet fermentum felis. Duis cursus lectus eget ipsum. Curabitur pellentesque eros cursus augue. Ut convallis nulla a nisl. Vestibulum a velit eget tellus pretium pretium. In eget lorem vel libero pellentesque dignissim.
+
+    <div id="setup-view" class="setup-ui">
+        <h1 style="font-size: 2.5rem; margin-bottom: 10px;">Bonjour.</h1>
+        <p style="color: var(--text-secondary); margin-bottom: 30px;">Colle ton lien iCal Pronote pour commencer.</p>
+        <input type="text" id="ical-url" placeholder="https://0130042a.index-education.net/...">
+        <button onclick="saveLink()">Se connecter</button>
+    </div>
+
+    <div id="dashboard" class="container hidden">
+        <div class="bento-item full">
+            <h2><span class="status-dot"></span> Statut</h2>
+            <p class="big-text" id="status-text">Chargement...</p>
+        </div>
+
+        <div class="bento-item full">
+            <h2>🔔 Prochain cours</h2>
+            <p class="big-text" id="next-lesson">...</p>
+        </div>
+
+        <div class="bento-item full tall">
+            <h2>📅 Aujourd'hui & demain</h2>
+            <ul id="event-list"></ul>
+        </div>
+
+        <div class="bento-item" onclick="reset()">
+            <h2>⚙️ Option</h2>
+            <p style="color: #ff3b30; font-weight: 600;">Déconnexion</p>
+        </div>
+        
+        <div class="bento-item">
+            <h2>📍 Mode</h2>
+            <p style="font-weight: 600;">Local Web</p>
+        </div>
+    </div>
+
+    <script>
+        const setupView = document.getElementById('setup-view');
+        const dashboard = document.getElementById('dashboard');
+
+        window.onload = () => {
+            const url = localStorage.getItem('pronote_url');
+            if (url) {
+                showDashboard(url);
+            }
+        };
+
+        function saveLink() {
+            const url = document.getElementById('ical-url').value;
+            if (url.includes('http')) {
+                localStorage.setItem('pronote_url', url);
+                showDashboard(url);
+            }
+        }
+
+        async function showDashboard(url) {
+            setupView.classList.add('hidden');
+            dashboard.classList.remove('hidden');
+            
+            // Utilisation d'un proxy pour éviter le blocage CORS
+            const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+            
+            try {
+                const response = await fetch(proxy);
+                const data = await response.json();
+                parseICS(data.contents);
+            } catch (e) {
+                document.getElementById('status-text').innerText = "Erreur de lien";
+            }
+        }
+
+        function parseICS(content) {
+            // Extraction basique des noms de cours et dates
+            const events = [];
+            const lines = content.split('\n');
+            let currentEvent = {};
+
+            lines.forEach(line => {
+                if (line.startsWith('SUMMARY:')) currentEvent.title = line.replace('SUMMARY:', '').trim();
+                if (line.startsWith('DTSTART:')) currentEvent.start = line.replace('DTSTART:', '').trim();
+                if (line.startsWith('END:VEVENT')) {
+                    events.push(currentEvent);
+                    currentEvent = {};
+                }
+            });
+
+            // Tri par date
+            events.sort((a, b) => a.start.localeCompare(b.start));
+
+            // Affichage
+            const list = document.getElementById('event-list');
+            list.innerHTML = "";
+            
+            if (events.length > 0) {
+                document.getElementById('next-lesson').innerText = events[0].title;
+                document.getElementById('status-text').innerText = "À jour";
+                
+                events.slice(0, 8).forEach(ev => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<strong>${ev.title}</strong>`;
+                    list.appendChild(li);
+                });
+            }
+        }
+
+        function reset() {
+            localStorage.removeItem('pronote_url');
+            location.reload();
+        }
+    </script>
 </body>
 </html>
