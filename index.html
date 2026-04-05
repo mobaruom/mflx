@@ -3,251 +3,193 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AlterTrack Pro</title>
+<title>AlterTrack PWA</title>
 
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#1a3a5c">
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <style>
 :root {
-  --cream:#f8f5ef; --white:#fff; --ink:#1a1a1a; --ink2:#3d3d3d; --muted:#8a8a8a;
+  --cream:#f8f5ef; --white:#fff; --ink:#1a1a1a; --muted:#8a8a8a;
   --border:#d8d2c8; --bl:#ece8e0; --accent:#1a3a5c; --gold:#c9932a;
-  --al:#e8f0f8; --green:#2d6a4f; --gbg:#eaf4ef; --red:#8b2020; --rbg:#fdf0f0;
-  --yellow:#8a6200; --ybg:#fdf8e8; --r:4px; --rl:8px; --sh:0 1px 4px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+  --green:#2d6a4f; --gbg:#eaf4ef; --red:#8b2020; --rbg:#fdf0f0;
+  --yellow:#8a6200; --ybg:#fdf8e8; --r:12px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { background: var(--cream); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; min-height: 100vh; font-size: 14px; }
+body { background: var(--cream); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; font-size: 16px; padding-bottom: 40px; }
 
-/* TOPBAR ORIGINALE */
-.topbar { background: var(--accent); color: #fff; padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-.logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; display: flex; align-items: center; gap: 12px; }
-.logo::after { content: 'PRO'; font-family: 'IBM Plex Mono', monospace; font-size: .6rem; background: var(--gold); padding: 2px 7px; border-radius: 2px; letter-spacing: 2px; color: #fff; }
+/* NAVBAR FIXE */
+.topbar { background: var(--accent); color: #fff; padding: env(safe-area-inset-top) 15px 10px; position: sticky; top: 0; z-index: 1000; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+.logo { font-family: 'Playfair Display', serif; font-size: 1.1rem; }
 
-.btn-exp { padding: 7px 15px; border-radius: var(--r); font-family: 'IBM Plex Sans', sans-serif; font-size: .76rem; font-weight: 600; cursor: pointer; border: 1px solid rgba(255,255,255,.3); background: transparent; color: #fff; transition: all .2s; }
-.btn-exp.gold { background: var(--gold); border-color: var(--gold); margin-left: 8px; }
+.btn-nav { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; cursor: pointer; }
 
-/* PAGE HEADER */
-.ph { background: var(--white); border-bottom: 1px solid var(--border); padding: 26px 48px 18px; }
-.ph h1 { font-family: 'Playfair Display', serif; font-size: 1.75rem; font-weight: 700; margin-bottom: 3px; }
-.ph p { font-size: .8rem; color: var(--muted); font-weight: 300; }
+/* STATS */
+.header-stats { background: var(--white); padding: 20px 15px; border-bottom: 1px solid var(--border); }
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.stat-card { background: var(--cream); padding: 10px; border-radius: 10px; text-align: center; border: 1px solid var(--bl); }
+.stat-val { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; display: block; }
+.stat-lab { font-size: 0.6rem; text-transform: uppercase; color: var(--muted); letter-spacing: 1px; }
 
-/* STATS AVEC BARRES */
-.stats { display: flex; background: var(--white); border-bottom: 1px solid var(--border); overflow-x: auto; }
-.si { flex: 1; padding: 15px 22px; border-right: 1px solid var(--bl); position: relative; min-width: 120px; }
-.sl { font-size: .67rem; text-transform: uppercase; letter-spacing: 1.8px; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
-.sv { font-family: 'Playfair Display', serif; font-size: 1.85rem; font-weight: 700; line-height: 1; }
-.sb { position: absolute; bottom: 0; left: 0; height: 2px; transition: width .5s; }
+/* FORMULAIRE */
+.container { padding: 15px; max-width: 800px; margin: 0 auto; }
+.card { background: var(--white); padding: 20px; border-radius: var(--r); border: 1px solid var(--border); margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+.input-group { margin-bottom: 15px; }
+input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); font-size: 1rem; background: #fafafa; outline: none; }
+.btn-main { width: 100%; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 1rem; }
 
-/* LAYOUT */
-.layout { display: grid; grid-template-columns: 310px 1fr; min-height: calc(100vh - 168px); }
+/* LISTE */
+.item-card { background: var(--white); padding: 15px; border-radius: var(--r); border: 1px solid var(--border); margin-bottom: 15px; position: relative; }
+.item-ent { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 2px; }
+.item-pos { font-size: 0.9rem; color: var(--muted); margin-bottom: 12px; }
 
-/* SIDEBAR */
-.sidebar { background: var(--white); border-right: 1px solid var(--border); padding: 22px; position: sticky; top: 56px; height: calc(100vh - 56px); overflow-y: auto; }
-.fg { margin-bottom: 12px; }
-label { display: block; font-size: .69rem; font-weight: 600; color: var(--ink2); text-transform: uppercase; margin-bottom: 3px; }
-input, select { width: 100%; border: 1px solid var(--border); border-radius: var(--r); color: var(--ink); font-size: .83rem; padding: 10px; background: var(--cream); outline: none; }
-.btn-add { width: 100%; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: var(--r); font-weight: 600; cursor: pointer; margin-top: 10px; }
+.st-btn { width: 100%; padding: 10px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; border: 1px solid var(--border); margin-bottom: 10px; }
+.st-btn.attente { background: var(--ybg); color: var(--yellow); }
+.st-btn.accepte { background: var(--gbg); color: var(--green); }
+.st-btn.refuse { background: var(--rbg); color: var(--red); }
 
-/* TABLEAU & CARTES MOBILE */
-.content { padding: 22px 26px; }
-.tw { background: var(--white); border: 1px solid var(--border); border-radius: var(--rl); overflow: hidden; box-shadow: var(--sh); }
-table { width: 100%; border-collapse: collapse; }
-thead { background: var(--accent); color: #fff; }
-th { padding: 12px; text-align: left; font-size: .64rem; text-transform: uppercase; letter-spacing: 1.4px; }
-td { padding: 12px; border-bottom: 1px solid var(--bl); font-size: .82rem; }
+.btn-row { display: flex; gap: 10px; }
+.link-a { flex: 2; text-align: center; background: var(--bl); padding: 8px; border-radius: 6px; text-decoration: none; color: var(--accent); font-weight: 600; font-size: 0.8rem; }
+.del-btn { flex: 1; background: none; border: none; color: var(--red); font-size: 0.75rem; font-weight: 600; }
 
-.st-select { font-size: 0.75rem; padding: 4px; border-radius: 4px; border: 1px solid var(--border); background: var(--white); cursor: pointer; font-weight: 500; width: 100%; }
-.st-select.accepte { background: var(--gbg); color: var(--green); border-color: #90d0a8; }
-.st-select.attente { background: var(--ybg); color: var(--yellow); border-color: #e8d090; }
-.st-select.refuse { background: var(--rbg); color: var(--red); border-color: #e0a0a0; }
-
-.link-btn { color: var(--accent); text-decoration: none; font-weight: 600; font-size: 0.75rem; display: inline-flex; align-items: center; gap: 4px; }
-
-@media (max-width: 850px) {
-  .layout { grid-template-columns: 1fr; }
-  .sidebar { height: auto; position: static; border-right: none; border-bottom: 1px solid var(--border); padding: 20px; }
-  .ph { padding: 20px; }
-  .content { padding: 15px; }
-  thead { display: none; }
-  tbody tr { display: block; border-bottom: 8px solid var(--cream); padding: 15px; background: #fff; }
-  td { display: block; padding: 6px 0; border: none; }
-  td:before { content: attr(data-label); font-size: 10px; color: var(--muted); display: block; text-transform: uppercase; font-weight: 700; margin-bottom: 2px; }
-}
-
-.toast { position: fixed; bottom: 22px; right: 22px; background: var(--accent); color: #fff; padding: 12px 20px; border-radius: var(--r); font-size: .8rem; opacity: 0; pointer-events: none; transition: 0.3s; z-index: 1000; }
-.toast.show { opacity: 1; }
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: #333; color: white; padding: 10px 20px; border-radius: 50px; transition: 0.4s; z-index: 2000; font-size: 0.8rem; }
+.toast.show { transform: translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
 
 <div class="topbar">
   <div class="logo">AlterTrack</div>
-  <div>
-    <button class="btn-exp" onclick="document.getElementById('file-input').click()">📁 Import Excel</button>
-    <button class="btn-exp gold" onclick="exportExcel()">⬇ Export</button>
+  <div style="display: flex; gap: 5px;">
+    <button class="btn-nav" onclick="document.getElementById('file-input').click()">📁 Import</button>
+    <button class="btn-nav" onclick="exportExcel()">⬇ Export</button>
   </div>
   <input type="file" id="file-input" hidden accept=".xlsx, .xls, .csv">
 </div>
 
-<div class="ph">
-  <h1>Suivi Alternance 2026</h1>
-  <p>Gestionnaire intelligent pour BTS SAM Marseille</p>
+<div class="header-stats">
+  <div class="stats-grid">
+    <div class="stat-card"><span class="stat-val" id="sT">0</span><span class="stat-lab">Total</span></div>
+    <div class="stat-card"><span class="stat-val" id="sA" style="color:var(--yellow)">0</span><span class="stat-lab">Attente</span></div>
+    <div class="stat-card"><span class="stat-val" id="sAc" style="color:var(--green)">0</span><span class="stat-lab">Succès</span></div>
+  </div>
 </div>
 
-<div class="stats">
-  <div class="si"><div class="sl">Total</div><div class="sv" id="sT">0</div><div class="sb" style="background:var(--accent);width:100%"></div></div>
-  <div class="si"><div class="sl">En attente</div><div class="sv" id="sA" style="color:var(--yellow)">0</div><div class="sb" id="bA" style="background:var(--yellow)"></div></div>
-  <div class="si"><div class="sl">Succès</div><div class="sv" id="sAc" style="color:var(--green)">0</div><div class="sb" id="bAc" style="background:var(--green)"></div></div>
-</div>
-
-<div class="layout">
-  <div class="sidebar">
-    <div class="fg"><label>Entreprise</label><input id="fe" placeholder="ex: CMA CGM"></div>
-    <div class="fg"><label>Poste</label><input id="fp" placeholder="ex: Assistant de direction"></div>
-    <div class="fg"><label>Lien de l'offre</label><input id="fl" placeholder="https://..."></div>
-    <div class="fg"><label>Statut</label>
-      <select id="fs">
-        <option value="attente">⏳ En attente</option>
-        <option value="accepte">✅ Acceptée</option>
-        <option value="refuse">❌ Refusée</option>
-      </select>
-    </div>
-    <button class="btn-add" onclick="add()">+ Ajouter</button>
+<div class="container">
+  <div class="card">
+    <div class="input-group"><input id="fe" type="text" placeholder="Entreprise"></div>
+    <div class="input-group"><input id="fp" type="text" placeholder="Poste"></div>
+    <div class="input-group"><input id="fl" type="text" placeholder="Lien (optionnel)"></div>
+    <button class="btn-main" onclick="add()">+ Ajouter à la liste</button>
   </div>
 
-  <div class="content">
-    <div class="tw">
-      <table>
-        <thead>
-          <tr><th>Entreprise</th><th>Poste</th><th>Lien</th><th>Statut</th><th style="text-align:right">Action</th></tr>
-        </thead>
-        <tbody id="tb"></tbody>
-      </table>
-    </div>
-  </div>
+  <div id="list-container"></div>
 </div>
 
 <div id="toast" class="toast">Action réussie</div>
 
 <script>
-const KEY = 'altertrack_sam_vfinal';
-let db = [];
+const DB_NAME = 'altertrack_mobile_v2';
+let data = JSON.parse(localStorage.getItem(DB_NAME)) || [];
 
-function load() { 
-  db = JSON.parse(localStorage.getItem(KEY)) || []; 
-  render(); stats(); 
-}
-
-function save() { 
-  localStorage.setItem(KEY, JSON.stringify(db)); 
-}
+function save() { localStorage.setItem(DB_NAME, JSON.stringify(data)); render(); stats(); }
 
 function add() {
-  const e = document.getElementById('fe').value.trim();
-  const p = document.getElementById('fp').value.trim();
-  const l = document.getElementById('fl').value.trim();
-  if(!e || !p) return;
-  db.unshift({ id: Date.now().toString(36), ent: e, pos: p, link: l, st: document.getElementById('fs').value });
-  save(); render(); stats();
+  const ent = document.getElementById('fe').value.trim();
+  const pos = document.getElementById('fp').value.trim();
+  const link = document.getElementById('fl').value.trim();
+  if(!ent || !pos) return;
+  data.unshift({ id: Date.now(), ent, pos, link, st: 'attente' });
+  save();
   document.getElementById('fe').value = ''; document.getElementById('fp').value = ''; document.getElementById('fl').value = '';
-  showToast("Ajouté");
+  showToast("Ajouté !");
 }
 
-function updateStatus(id, newStatus) {
-  const item = db.find(i => i.id === id);
-  if(item) {
-    item.st = newStatus;
-    save(); render(); stats();
-    showToast("Statut mis à jour");
-  }
+function updateStatus(id, st) {
+  const idx = data.findIndex(i => i.id === id);
+  if(idx > -1) { data[idx].st = st; save(); showToast("Statut mis à jour"); }
 }
 
 function del(id) {
-  if(confirm("Supprimer ?")) { 
-    db = db.filter(i => i.id !== id); 
-    save(); render(); stats(); 
-    showToast("Supprimé");
-  }
+  if(confirm("Supprimer ?")) { data = data.filter(i => i.id !== id); save(); }
 }
 
 function render() {
-  const tb = document.getElementById('tb');
-  if(db.length === 0) {
-    tb.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:40px; color:#aaa;">Rien ici. Importe ton Excel !</td></tr>';
+  const container = document.getElementById('list-container');
+  if(data.length === 0) {
+    container.innerHTML = `<div style="text-align:center; padding:40px; color:gray;">Aucune donnée. Importez votre Excel !</div>`;
     return;
   }
-  tb.innerHTML = db.map(i => `
-    <tr>
-      <td data-label="Entreprise"><strong>${i.ent}</strong></td>
-      <td data-label="Poste">${i.pos}</td>
-      <td data-label="Lien">${i.link ? `<a href="${i.link}" target="_blank" class="link-btn">🔗 Voir</a>` : '-'}</td>
-      <td data-label="Statut">
-        <select class="st-select ${i.st}" onchange="updateStatus('${i.id}', this.value)">
-          <option value="attente" ${i.st === 'attente' ? 'selected' : ''}>⏳ Attente</option>
-          <option value="accepte" ${i.st === 'accepte' ? 'selected' : ''}>✅ Succès</option>
-          <option value="refuse" ${i.st === 'refuse' ? 'selected' : ''}>❌ Refusé</option>
-        </select>
-      </td>
-      <td data-label="Action" style="text-align:right">
-        <button onclick="del('${i.id}')" style="background:none; border:none; color:var(--red); font-weight:600; cursor:pointer;">Suppr.</button>
-      </td>
-    </tr>
+  container.innerHTML = data.map(i => `
+    <div class="item-card">
+      <div class="item-ent">${i.ent}</div>
+      <div class="item-pos">${i.pos}</div>
+      
+      <select class="st-btn ${i.st}" onchange="updateStatus(${i.id}, this.value)">
+        <option value="attente" ${i.st==='attente'?'selected':''}>⏳ En attente</option>
+        <option value="accepte" ${i.st==='accepte'?'selected':''}>✅ Succès / Accepté</option>
+        <option value="refuse" ${i.st==='refuse'?'selected':''}>❌ Refusé</option>
+      </select>
+
+      <div class="btn-row">
+        ${i.link ? `<a href="${i.link}" target="_blank" class="link-a">🔗 Voir l'offre</a>` : '<div class="link-a" style="opacity:0.3">Pas de lien</div>'}
+        <button class="del-btn" onclick="del(${i.id})">Supprimer</button>
+      </div>
+    </div>
   `).join('');
 }
 
 function stats() {
-  const total = db.length;
-  const att = db.filter(i => i.st === 'attente').length;
-  const acc = db.filter(i => i.st === 'accepte').length;
-  document.getElementById('sT').textContent = total;
-  document.getElementById('sA').textContent = att;
-  document.getElementById('sAc').textContent = acc;
-  if(total > 0) {
-    document.getElementById('bA').style.width = (att/total*100) + '%';
-    document.getElementById('bAc').style.width = (acc/total*100) + '%';
-  }
+  document.getElementById('sT').innerText = data.length;
+  document.getElementById('sA').innerText = data.filter(i => i.st === 'attente').length;
+  document.getElementById('sAc').innerText = data.filter(i => i.st === 'accepte').length;
 }
 
-// IMPORTATION ROBUSTE (OPTIMISÉE MOBILE)
-document.getElementById('file-input').addEventListener('change', function(e) {
+// IMPORTATION ROBUSTE POUR TÉLÉPHONE
+document.getElementById('file-input').onchange = function(e) {
   const file = e.target.files[0];
   if(!file) return;
+  
   const reader = new FileReader();
-  reader.onload = function(e) {
+  reader.onload = function(ex) {
     try {
-      const dataArr = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(dataArr, {type: 'array'});
-      const sheet = workbook.Sheets[workbook.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json(sheet, {defval: ""});
-      let added = 0;
-      rows.forEach(row => {
-        const entreprise = row['Entreprise'] || row['entreprise'] || row['Nom'];
-        const poste = row['Intitulé du Poste'] || row['Poste visé'] || row['Poste'];
-        const lien = row['Lien'] || row['URL'] || "";
-        if(entreprise && entreprise !== "Entreprise") { 
-          db.push({ id: Math.random().toString(36).substr(2, 9), ent: entreprise, pos: poste || "À préciser", link: lien, st: 'attente' });
-          added++;
+      const arr = new Uint8Array(ex.target.result);
+      const wb = XLSX.read(arr, {type: 'array'});
+      const sheet = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet);
+      
+      let count = 0;
+      rows.forEach(r => {
+        const ent = r['Entreprise'] || r['entreprise'] || r['Nom'];
+        const pos = r['Intitulé du Poste'] || r['Poste visé'] || r['Poste'];
+        const link = r['Lien'] || r['URL'] || "";
+        if(ent && pos) {
+          data.push({ id: Math.random(), ent, pos, link, st: 'attente' });
+          count++;
         }
       });
-      if(added > 0) { save(); render(); stats(); showToast(`${added} lignes importées !`); }
-    } catch(err) { alert("Erreur de lecture du fichier."); }
+      if(count > 0) { save(); showToast(count + " lignes importées !"); }
+      else { alert("Colonnes 'Entreprise' et 'Poste' non trouvées."); }
+    } catch(err) {
+      alert("Erreur lors de la lecture du fichier.");
+    }
   };
   reader.readAsArrayBuffer(file);
-});
+};
 
 function showToast(m) {
   const t = document.getElementById('toast');
-  t.textContent = m; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  t.innerText = m; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
 }
 
 function exportExcel() {
-  const ws = XLSX.utils.json_to_sheet(db);
+  const ws = XLSX.utils.json_to_sheet(data);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Suivi");
   XLSX.writeFile(wb, "Mon_Suivi_Alternance.xlsx");
