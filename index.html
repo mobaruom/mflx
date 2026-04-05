@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AlterTrack Pro - Import</title>
+<title>AlterTrack Pro</title>
 
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#1a3a5c">
@@ -16,85 +16,126 @@
   --cream:#f8f5ef; --white:#fff; --ink:#1a1a1a; --ink2:#3d3d3d; --muted:#8a8a8a;
   --border:#d8d2c8; --bl:#ece8e0; --accent:#1a3a5c; --gold:#c9932a;
   --al:#e8f0f8; --green:#2d6a4f; --gbg:#eaf4ef; --red:#8b2020; --rbg:#fdf0f0;
-  --yellow:#8a6200; --ybg:#fdf8e8; --r:8px; --rl:12px; --sh:0 2px 12px rgba(0,0,0,.08);
+  --yellow:#8a6200; --ybg:#fdf8e8; --r:4px; --rl:8px; --sh:0 1px 4px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--cream); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; padding-bottom: 50px; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { background: var(--cream); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; min-height: 100vh; font-size: 14px; }
 
-/* TOPBAR */
-.topbar { background: var(--accent); color: #fff; padding: 0 20px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-.logo { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-.logo::after { content: 'IMPORT'; font-family: 'IBM Plex Mono', monospace; font-size: .5rem; background: var(--gold); padding: 2px 5px; border-radius: 2px; }
+/* TOPBAR ORIGINALE */
+.topbar { background: var(--accent); color: #fff; padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; display: flex; align-items: center; gap: 12px; }
+.logo::after { content: 'PRO'; font-family: 'IBM Plex Mono', monospace; font-size: .6rem; background: var(--gold); padding: 2px 7px; border-radius: 2px; letter-spacing: 2px; color: #fff; }
 
-/* IMPORT ZONE */
-.import-zone { background: var(--white); margin: 20px; padding: 20px; border: 2px dashed var(--border); border-radius: var(--rl); text-align: center; transition: 0.3s; cursor: pointer; }
-.import-zone:hover, .import-zone.dragover { border-color: var(--accent); background: var(--al); }
-.import-zone p { color: var(--muted); font-size: 0.9rem; }
-.import-zone b { color: var(--accent); display: block; margin-bottom: 5px; }
+.btn-exp { padding: 7px 15px; border-radius: var(--r); font-family: 'IBM Plex Sans', sans-serif; font-size: .76rem; font-weight: 600; cursor: pointer; border: 1px solid rgba(255,255,255,.3); background: transparent; color: #fff; transition: all .2s; margin-left: 5px; }
+.btn-exp.gold { background: var(--gold); border-color: var(--gold); }
+
+/* PAGE HEADER */
+.ph { background: var(--white); border-bottom: 1px solid var(--border); padding: 26px 48px 18px; }
+.ph h1 { font-family: 'Playfair Display', serif; font-size: 1.75rem; font-weight: 700; margin-bottom: 3px; }
+.ph p { font-size: .8rem; color: var(--muted); font-weight: 300; }
 
 /* STATS */
 .stats { display: flex; background: var(--white); border-bottom: 1px solid var(--border); overflow-x: auto; }
-.si { flex: 1; min-width: 110px; padding: 15px; border-right: 1px solid var(--bl); position: relative; text-align: center; }
-.sl { font-size: .6rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); font-weight: 600; }
-.sv { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; }
+.si { flex: 1; padding: 15px 22px; border-right: 1px solid var(--bl); position: relative; min-width: 120px; }
+.sl { font-size: .67rem; text-transform: uppercase; letter-spacing: 1.8px; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
+.sv { font-family: 'Playfair Display', serif; font-size: 1.85rem; font-weight: 700; line-height: 1; }
+.sb { position: absolute; bottom: 0; left: 0; height: 2px; transition: width .5s; }
 
 /* LAYOUT */
-.layout { max-width: 1100px; margin: 0 auto; padding: 10px; }
-.sidebar { background: var(--white); padding: 20px; border-radius: var(--rl); border: 1px solid var(--border); margin-bottom: 20px; }
+.layout { display: grid; grid-template-columns: 310px 1fr; min-height: calc(100vh - 168px); }
 
-/* TABLE & CARDS */
-.tw { width: 100%; }
-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
-tbody tr { background: var(--white); box-shadow: var(--sh); border-radius: var(--rl); display: flex; flex-direction: column; padding: 15px; margin-bottom: 10px; border: 1px solid var(--border); }
-td { padding: 4px 0; border: none; }
-td:first-child { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+/* SIDEBAR */
+.sidebar { background: var(--white); border-right: 1px solid var(--border); padding: 22px; position: sticky; top: 56px; height: calc(100vh - 56px); overflow-y: auto; }
+.ss { margin-bottom: 22px; }
+.stl { font-size: .66rem; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); font-weight: 600; margin-bottom: 10px; padding-bottom: 7px; border-bottom: 1px solid var(--bl); }
 
-/* DESKTOP */
-@media (min-width: 850px) {
-  tbody tr { display: table-row; }
-  td { display: table-cell; padding: 15px; border-bottom: 1px solid var(--bl); }
-  table { border-spacing: 0; }
-  .layout { display: grid; grid-template-columns: 320px 1fr; gap: 20px; padding: 20px; }
+.fg { margin-bottom: 12px; }
+label { display: block; font-size: .69rem; font-weight: 600; color: var(--ink2); text-transform: uppercase; margin-bottom: 3px; }
+input, select, textarea { width: 100%; border: 1px solid var(--border); border-radius: var(--r); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; font-size: .83rem; padding: 10px; background: var(--cream); outline: none; }
+
+.btn-add { width: 100%; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: var(--r); font-weight: 600; cursor: pointer; transition: all .2s; }
+
+/* TABLE & CARDS RESPONSIVE */
+.content { padding: 22px 26px; }
+.tw { background: var(--white); border: 1px solid var(--border); border-radius: var(--rl); overflow: hidden; box-shadow: var(--sh); }
+table { width: 100%; border-collapse: collapse; }
+thead { background: var(--accent); color: #fff; }
+th { padding: 12px; text-align: left; font-size: .64rem; text-transform: uppercase; letter-spacing: 1.4px; }
+td { padding: 12px; border-bottom: 1px solid var(--bl); font-size: .82rem; }
+
+.badge { padding: 2px 8px; border-radius: 3px; font-size: .65rem; font-weight: 700; text-transform: uppercase; }
+.badge-attente { background: var(--ybg); color: var(--yellow); }
+.badge-accepte { background: var(--gbg); color: var(--green); }
+
+/* IMPORT DISCRET */
+.import-box { margin-top: 15px; padding: 10px; border: 1px dashed var(--border); border-radius: var(--r); text-align: center; cursor: pointer; background: #fafafa; }
+.import-box:hover { background: var(--al); }
+
+/* RESPONSIVE */
+@media (max-width: 850px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { height: auto; position: static; }
+  .ph, .topbar { padding-left: 20px; padding-right: 20px; }
+  .content { padding: 15px; }
+  thead { display: none; }
+  tbody tr { display: block; border-bottom: 10px solid var(--cream); padding: 10px; }
+  td { display: block; padding: 5px 0; border: none; }
 }
 
-.badge { padding: 4px 8px; border-radius: 4px; font-size: .65rem; font-weight: 700; text-transform: uppercase; background: var(--bl); }
-.btn-del { color: var(--red); background: none; border: none; cursor: pointer; font-size: 0.75rem; font-weight: 600; }
-
-.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--accent); color: white; padding: 12px 25px; border-radius: 50px; transition: 0.4s; z-index: 1000; }
-.toast.show { transform: translateX(-50%) translateY(0); }
+.toast { position: fixed; bottom: 22px; right: 22px; background: var(--accent); color: #fff; padding: 12px 20px; border-radius: var(--r); font-size: .8rem; opacity: 0; transition: 0.3s; z-index: 1000; }
+.toast.show { opacity: 1; }
 </style>
 </head>
 <body>
 
 <div class="topbar">
   <div class="logo">AlterTrack</div>
-  <button onclick="exportExcel()" style="background:none; border:1px solid white; color:white; padding:5px 10px; border-radius:4px; font-size:10px; cursor:pointer;">EXPORTER</button>
-</div>
-
-<div class="import-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
-  <b>📁 Déposez votre Excel ici</b>
-  <p>Ou cliquez pour choisir le fichier (Format .xlsx ou .csv)</p>
+  <div class="exports">
+    <button class="btn-exp" onclick="document.getElementById('file-input').click()">📁 Import</button>
+    <button class="btn-exp gold" onclick="exportExcel()">⬇ Excel</button>
+  </div>
   <input type="file" id="file-input" hidden accept=".xlsx, .xls, .csv">
 </div>
 
+<div class="ph">
+  <h1>Suivi des candidatures</h1>
+  <p>Sauvegarde automatique · Stockage local sécurisé</p>
+</div>
+
 <div class="stats">
-  <div class="si"><div class="sl">Total</div><div class="sv" id="sT">0</div></div>
-  <div class="si"><div class="sl">En attente</div><div class="sv" id="sA" style="color:var(--yellow)">0</div></div>
-  <div class="si"><div class="sl">Succès</div><div class="sv" id="sAc" style="color:var(--green)">0</div></div>
+  <div class="si"><div class="sl">Total</div><div class="sv" id="sT">0</div><div class="sb" style="background:var(--accent);width:100%"></div></div>
+  <div class="si"><div class="sl">En attente</div><div class="sv" id="sA" style="color:var(--yellow)">0</div><div class="sb" id="bA" style="background:var(--yellow)"></div></div>
+  <div class="si"><div class="sl">Acceptées</div><div class="sv" id="sAc" style="color:var(--green)">0</div><div class="sb" id="bAc" style="background:var(--green)"></div></div>
 </div>
 
 <div class="layout">
   <div class="sidebar">
-    <div style="font-size:11px; font-weight:bold; text-transform:uppercase; margin-bottom:15px; color:var(--muted)">Ajout manuel</div>
-    <input id="fe" type="text" placeholder="Entreprise" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid var(--border); border-radius:4px;">
-    <input id="fp" type="text" placeholder="Poste" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid var(--border); border-radius:4px;">
-    <button onclick="add()" style="width:100%; padding:12px; background:var(--accent); color:white; border:none; border-radius:4px; font-weight:600; cursor:pointer;">Ajouter</button>
+    <div class="ss">
+      <div class="stl">Nouvelle candidature</div>
+      <div class="fg"><label>Entreprise</label><input id="fe" placeholder="ex: Decathlon"></div>
+      <div class="fg"><label>Poste</label><input id="fp" placeholder="ex: Alternant BTS SAM"></div>
+      <div class="fg"><label>Statut</label>
+        <select id="fs">
+          <option value="attente">⏳ En attente</option>
+          <option value="accepte">✅ Acceptée</option>
+          <option value="refuse">❌ Refusée</option>
+        </select>
+      </div>
+      <button class="btn-add" onclick="add()">+ Ajouter</button>
+      
+      <div class="import-box" onclick="document.getElementById('file-input').click()">
+         <span style="font-size: 11px; color: var(--muted);">Importer un fichier Excel existant</span>
+      </div>
+    </div>
   </div>
 
   <div class="content">
     <div class="tw">
-      <table id="main-table">
+      <table>
+        <thead>
+          <tr><th>Entreprise</th><th>Poste</th><th>Statut</th><th>Action</th></tr>
+        </thead>
         <tbody id="tb"></tbody>
       </table>
     </div>
@@ -104,115 +145,82 @@ td:first-child { font-family: 'Playfair Display', serif; font-size: 1.1rem; font
 <div id="toast" class="toast">Action réussie</div>
 
 <script>
-const KEY = 'altertrack_import_v1';
+const KEY = 'altertrack_v4_final';
 let db = [];
 
-// 1. GESTION DU FICHIER EXCEL / CSV
-const dropZone = document.getElementById('drop-zone');
-const fileInput = document.getElementById('file-input');
-
-fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-dropZone.addEventListener('drop', e => {
-    e.preventDefault();
-    dropZone.classList.remove('dragover');
-    handleFile(e.dataTransfer.files[0]);
-});
-
-function handleFile(file) {
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, {type: 'array'});
-        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(firstSheet);
-        
-        processImport(rows);
-    };
-    reader.readAsArrayBuffer(file);
-}
-
-function processImport(rows) {
-    let importedCount = 0;
-    rows.forEach(row => {
-        // Mapping intelligent : cherche les colonnes qui ressemblent à Entreprise ou Poste
-        const ent = row['Entreprise'] || row['entreprise'] || row['Nom'] || row['Société'];
-        const pos = row['Poste'] || row['Intitulé du Poste'] || row['Mission'] || row['Poste visé'];
-        const statut = row['Statut'] || 'attente';
-
-        if(ent && pos) {
-            db.push({
-                id: Math.random().toString(36).substr(2, 9),
-                ent: ent,
-                pos: pos,
-                st: statut.toLowerCase().includes('accept') ? 'accepte' : 'attente',
-                date: new Date().toLocaleDateString('fr-FR')
-            });
-            importedCount++;
-        }
-    });
-    
-    if(importedCount > 0) {
-        save(); render(); stats();
-        showToast(`${importedCount} lignes importées avec succès !`);
-    } else {
-        alert("Désolé, je n'ai pas trouvé de colonnes 'Entreprise' et 'Poste' dans votre fichier.");
-    }
-}
-
-// 2. FONCTIONS DE BASE (COPIÉES DE TA VERSION PRÉCÉDENTE)
 function load() { db = JSON.parse(localStorage.getItem(KEY)) || []; render(); stats(); }
-function save() { localStorage.setItem(KEY, JSON.stringify(db)); }
+function save() { localStorage.setItem(KEY, JSON.stringify(db)); showToast("✓ Données synchronisées"); }
 
 function add() {
-    const e = document.getElementById('fe').value.trim();
-    const p = document.getElementById('fp').value.trim();
-    if(!e || !p) return;
-    db.unshift({ id: Date.now().toString(36), ent: e, pos: p, st: 'attente', date: new Date().toLocaleDateString('fr-FR') });
-    save(); render(); stats();
-    document.getElementById('fe').value = ''; document.getElementById('fp').value = '';
+  const e = document.getElementById('fe').value.trim();
+  const p = document.getElementById('fp').value.trim();
+  if(!e || !p) return;
+  db.unshift({ id: Date.now().toString(36), ent: e, pos: p, st: document.getElementById('fs').value });
+  save(); render(); stats();
+  document.getElementById('fe').value = ''; document.getElementById('fp').value = '';
 }
 
 function del(id) {
-    db = db.filter(i => i.id !== id);
-    save(); render(); stats();
+  if(confirm("Supprimer ?")) { db = db.filter(i => i.id !== id); save(); render(); stats(); }
 }
 
 function render() {
-    const tb = document.getElementById('tb');
-    tb.innerHTML = db.map(i => `
-        <tr>
-            <td>${i.ent}</td>
-            <td>${i.pos}</td>
-            <td><span class="badge">${i.st}</span></td>
-            <td><button class="btn-del" onclick="del('${i.id}')">Suppr.</button></td>
-        </tr>
-    `).join('');
+  const tb = document.getElementById('tb');
+  tb.innerHTML = db.map(i => `
+    <tr>
+      <td><strong>${i.ent}</strong></td>
+      <td>${i.pos}</td>
+      <td><span class="badge badge-${i.st}">${i.st}</span></td>
+      <td><button onclick="del('${i.id}')" style="background:none; border:none; color:var(--red); cursor:pointer;">Suppr.</button></td>
+    </tr>
+  `).join('');
 }
 
 function stats() {
-    document.getElementById('sT').textContent = db.length;
-    document.getElementById('sA').textContent = db.filter(i => i.st === 'attente').length;
-    document.getElementById('sAc').textContent = db.filter(i => i.st === 'accepte').length;
+  const total = db.length;
+  const att = db.filter(i => i.st === 'attente').length;
+  const acc = db.filter(i => i.st === 'accepte').length;
+  document.getElementById('sT').textContent = total;
+  document.getElementById('sA').textContent = att;
+  document.getElementById('sAc').textContent = acc;
+  if(total > 0) {
+    document.getElementById('bA').style.width = (att/total*100) + '%';
+    document.getElementById('bAc').style.width = (acc/total*100) + '%';
+  }
 }
 
+// GESTION IMPORT
+document.getElementById('file-input').addEventListener('change', e => {
+  const file = e.target.files[0];
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const data = new Uint8Array(e.target.result);
+    const workbook = XLSX.read(data, {type: 'array'});
+    const rows = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+    rows.forEach(row => {
+      const ent = row['Entreprise'] || row['entreprise'] || row['Nom'];
+      const pos = row['Poste'] || row['Intitulé du Poste'] || row['Poste visé'];
+      if(ent && pos) db.push({ id: Math.random().toString(36).substr(2,9), ent, pos, st: 'attente' });
+    });
+    save(); render(); stats();
+  };
+  reader.readAsArrayBuffer(file);
+});
+
 function showToast(m) {
-    const t = document.getElementById('toast');
-    t.textContent = m; t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
+  const t = document.getElementById('toast');
+  t.textContent = m; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
 }
 
 function exportExcel() {
-    const ws = XLSX.utils.json_to_sheet(db);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Candidatures");
-    XLSX.writeFile(wb, "AlterTrack_Export.xlsx");
+  const ws = XLSX.utils.json_to_sheet(db);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Suivi");
+  XLSX.writeFile(wb, "AlterTrack_Export.xlsx");
 }
 
 window.onload = load;
 </script>
-
 </body>
 </html>
