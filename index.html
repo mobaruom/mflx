@@ -3,10 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AlterTrack Pro</title>
+<title>AlterTrack Pro - Import</title>
 
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#1a3a5c">
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -17,90 +16,52 @@
   --cream:#f8f5ef; --white:#fff; --ink:#1a1a1a; --ink2:#3d3d3d; --muted:#8a8a8a;
   --border:#d8d2c8; --bl:#ece8e0; --accent:#1a3a5c; --gold:#c9932a;
   --al:#e8f0f8; --green:#2d6a4f; --gbg:#eaf4ef; --red:#8b2020; --rbg:#fdf0f0;
-  --yellow:#8a6200; --ybg:#fdf8e8; --purple:#4a2d6a; --pbg:#f3eefa;
-  --r:6px; --rl:12px; --sh:0 2px 12px rgba(0,0,0,.08);
+  --yellow:#8a6200; --ybg:#fdf8e8; --r:8px; --rl:12px; --sh:0 2px 12px rgba(0,0,0,.08);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { background: var(--cream); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; min-height: 100vh; font-size: 14px; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--cream); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; padding-bottom: 50px; }
 
 /* TOPBAR */
-.topbar { background: var(--accent); color: #fff; padding: 0 20px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-.logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-.logo::after { content: 'PRO'; font-family: 'IBM Plex Mono', monospace; font-size: .55rem; background: var(--gold); padding: 2px 6px; border-radius: 2px; letter-spacing: 1px; }
+.topbar { background: var(--accent); color: #fff; padding: 0 20px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.logo { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.logo::after { content: 'IMPORT'; font-family: 'IBM Plex Mono', monospace; font-size: .5rem; background: var(--gold); padding: 2px 5px; border-radius: 2px; }
 
-/* HEADER & STATS */
-.ph { background: var(--white); padding: 25px 20px; border-bottom: 1px solid var(--border); text-align: center; }
-.ph h1 { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 5px; }
-.ph p { color: var(--muted); font-size: 0.85rem; font-weight: 300; }
+/* IMPORT ZONE */
+.import-zone { background: var(--white); margin: 20px; padding: 20px; border: 2px dashed var(--border); border-radius: var(--rl); text-align: center; transition: 0.3s; cursor: pointer; }
+.import-zone:hover, .import-zone.dragover { border-color: var(--accent); background: var(--al); }
+.import-zone p { color: var(--muted); font-size: 0.9rem; }
+.import-zone b { color: var(--accent); display: block; margin-bottom: 5px; }
 
-.stats { display: flex; background: var(--white); border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
-.si { flex: 1; min-width: 120px; padding: 15px; border-right: 1px solid var(--bl); position: relative; text-align: center; }
-.sl { font-size: .65rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); font-weight: 600; margin-bottom: 5px; }
-.sv { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; line-height: 1; }
-.sb { position: absolute; bottom: 0; left: 0; height: 3px; transition: width 0.5s ease; }
+/* STATS */
+.stats { display: flex; background: var(--white); border-bottom: 1px solid var(--border); overflow-x: auto; }
+.si { flex: 1; min-width: 110px; padding: 15px; border-right: 1px solid var(--bl); position: relative; text-align: center; }
+.sl { font-size: .6rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); font-weight: 600; }
+.sv { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; }
 
 /* LAYOUT */
-.layout { display: flex; flex-direction: column; max-width: 1200px; margin: 0 auto; padding: 20px; gap: 20px; }
-
-/* SIDEBAR / FORM */
-.sidebar { background: var(--white); padding: 25px; border-radius: var(--rl); border: 1px solid var(--border); box-shadow: var(--sh); }
-.stl { font-size: .7rem; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); font-weight: 700; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--bl); }
-
-.fg { margin-bottom: 15px; }
-label { display: block; font-size: .65rem; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; color: var(--ink2); }
-input, select { width: 100%; border: 1px solid var(--border); border-radius: var(--r); padding: 12px; background: var(--cream); font-family: inherit; font-size: 1rem; outline: none; transition: 0.2s; -webkit-appearance: none; }
-input:focus { border-color: var(--accent); background: #fff; box-shadow: 0 0 0 3px rgba(26,58,92,0.1); }
-
-.btn-add { width: 100%; padding: 14px; background: var(--accent); color: #fff; border: none; border-radius: var(--r); font-weight: 600; cursor: pointer; font-size: 1rem; transition: 0.2s; }
-.btn-add:active { transform: scale(0.98); }
+.layout { max-width: 1100px; margin: 0 auto; padding: 10px; }
+.sidebar { background: var(--white); padding: 20px; border-radius: var(--rl); border: 1px solid var(--border); margin-bottom: 20px; }
 
 /* TABLE & CARDS */
-.content { width: 100%; }
-.tw { background: transparent; }
+.tw { width: 100%; }
+table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+tbody tr { background: var(--white); box-shadow: var(--sh); border-radius: var(--rl); display: flex; flex-direction: column; padding: 15px; margin-bottom: 10px; border: 1px solid var(--border); }
+td { padding: 4px 0; border: none; }
+td:first-child { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--accent); }
 
-/* Desktop Table Design */
-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; margin-top: -8px; }
-thead { display: none; } /* On cache le header pour le transformer en cartes */
-tbody tr { background: var(--white); box-shadow: var(--sh); border-radius: var(--rl); display: flex; flex-direction: column; padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); position: relative; }
-
-/* Styling des éléments dans la carte mobile */
-td { padding: 4px 0; display: block; border: none; }
-td:nth-child(1) { font-size: 1.2rem; font-family: 'Playfair Display', serif; font-weight: 700; color: var(--accent); }
-td:nth-child(2) { font-weight: 500; color: var(--ink2); margin-bottom: 10px; }
-td:nth-child(3) { margin-bottom: 15px; }
-td:nth-child(4) { border-top: 1px solid var(--bl); padding-top: 15px; display: flex; justify-content: space-between; align-items: center; }
-
-.badge { padding: 4px 10px; border-radius: 4px; font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-.badge-attente { background: var(--ybg); color: var(--yellow); border: 1px solid #e8d090; }
-.badge-relance_moi { background: var(--pbg); color: var(--purple); border: 1px solid #c8a8e8; }
-.badge-accepte { background: var(--gbg); color: var(--green); border: 1px solid #90d0a8; }
-.badge-refuse { background: var(--rbg); color: var(--red); border: 1px solid #e0a0a0; }
-
-.btn-del { background: var(--rbg); color: var(--red); border: 1px solid #e0a0a0; padding: 6px 12px; border-radius: var(--r); font-weight: 600; font-size: 0.75rem; cursor: pointer; }
-
-/* DESKTOP ADJUSTMENTS (Plus de 850px) */
+/* DESKTOP */
 @media (min-width: 850px) {
-  .layout { flex-direction: row; align-items: flex-start; padding: 40px 20px; }
-  .sidebar { width: 350px; position: sticky; top: 80px; }
-  .ph { text-align: left; padding: 40px 100px; }
-  .ph h1 { font-size: 2.5rem; }
-  
-  thead { display: table-header-group; }
-  table { border-spacing: 0; }
-  tbody tr { display: table-row; background: var(--white); box-shadow: none; border-radius: 0; margin-bottom: 0; border: none; }
-  tbody tr:hover { background: #faf9f6; }
+  tbody tr { display: table-row; }
   td { display: table-cell; padding: 15px; border-bottom: 1px solid var(--bl); }
-  td:nth-child(1) { font-size: 1rem; }
-  td:nth-child(2) { margin-bottom: 0; }
-  td:nth-child(4) { border-top: none; padding-top: 15px; display: table-cell; text-align: right; }
-  
-  .tw { background: var(--white); border: 1px solid var(--border); border-radius: var(--rl); overflow: hidden; box-shadow: var(--sh); }
-  thead th { background: var(--accent); color: #fff; padding: 15px; text-align: left; font-size: .65rem; text-transform: uppercase; letter-spacing: 1.5px; }
+  table { border-spacing: 0; }
+  .layout { display: grid; grid-template-columns: 320px 1fr; gap: 20px; padding: 20px; }
 }
 
-/* TOAST */
-.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--accent); color: #fff; padding: 12px 25px; border-radius: 50px; font-weight: 500; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+.badge { padding: 4px 8px; border-radius: 4px; font-size: .65rem; font-weight: 700; text-transform: uppercase; background: var(--bl); }
+.btn-del { color: var(--red); background: none; border: none; cursor: pointer; font-size: 0.75rem; font-weight: 600; }
+
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--accent); color: white; padding: 12px 25px; border-radius: 50px; transition: 0.4s; z-index: 1000; }
 .toast.show { transform: translateX(-50%) translateY(0); }
 </style>
 </head>
@@ -108,131 +69,145 @@ td:nth-child(4) { border-top: 1px solid var(--bl); padding-top: 15px; display: f
 
 <div class="topbar">
   <div class="logo">AlterTrack</div>
-  <button class="btn-exp" style="border-color: var(--gold); color: var(--gold);" onclick="exportExcel()">EXCEL</button>
+  <button onclick="exportExcel()" style="background:none; border:1px solid white; color:white; padding:5px 10px; border-radius:4px; font-size:10px; cursor:pointer;">EXPORTER</button>
 </div>
 
-<div class="ph">
-  <h1>Mon Suivi</h1>
-  <p>Candidatures en alternance 2026</p>
+<div class="import-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+  <b>📁 Déposez votre Excel ici</b>
+  <p>Ou cliquez pour choisir le fichier (Format .xlsx ou .csv)</p>
+  <input type="file" id="file-input" hidden accept=".xlsx, .xls, .csv">
 </div>
 
 <div class="stats">
-  <div class="si"><div class="sl">Total</div><div class="sv" id="sT">0</div><div class="sb" style="background:var(--accent);width:100%"></div></div>
-  <div class="si"><div class="sl">Attente</div><div class="sv" id="sA" style="color:var(--yellow)">0</div><div class="sb" id="bA" style="background:var(--yellow)"></div></div>
-  <div class="si"><div class="sl">Succès</div><div class="sv" id="sAc" style="color:var(--green)">0</div><div class="sb" id="bAc" style="background:var(--green)"></div></div>
+  <div class="si"><div class="sl">Total</div><div class="sv" id="sT">0</div></div>
+  <div class="si"><div class="sl">En attente</div><div class="sv" id="sA" style="color:var(--yellow)">0</div></div>
+  <div class="si"><div class="sl">Succès</div><div class="sv" id="sAc" style="color:var(--green)">0</div></div>
 </div>
 
 <div class="layout">
   <div class="sidebar">
-    <div class="stl">Nouvelle entrée</div>
-    <div class="fg"><label>Entreprise</label><input id="fe" type="text" placeholder="Nom de la boîte"></div>
-    <div class="fg"><label>Poste recherché</label><input id="fp" type="text" placeholder="Titre de l'annonce"></div>
-    <div class="fg"><label>État actuel</label>
-      <select id="fs">
-        <option value="attente">⏳ En attente</option>
-        <option value="relance_moi">📤 Relance effectuée</option>
-        <option value="accepte">✅ Acceptée</option>
-        <option value="refuse">❌ Refusée</option>
-      </select>
-    </div>
-    <button class="btn-add" onclick="add()">Ajouter à la liste</button>
+    <div style="font-size:11px; font-weight:bold; text-transform:uppercase; margin-bottom:15px; color:var(--muted)">Ajout manuel</div>
+    <input id="fe" type="text" placeholder="Entreprise" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid var(--border); border-radius:4px;">
+    <input id="fp" type="text" placeholder="Poste" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid var(--border); border-radius:4px;">
+    <button onclick="add()" style="width:100%; padding:12px; background:var(--accent); color:white; border:none; border-radius:4px; font-weight:600; cursor:pointer;">Ajouter</button>
   </div>
 
   <div class="content">
     <div class="tw">
-      <table>
-        <thead>
-          <tr><th>Entreprise</th><th>Poste</th><th>Statut</th><th style="text-align:right">Action</th></tr>
-        </thead>
+      <table id="main-table">
         <tbody id="tb"></tbody>
       </table>
     </div>
   </div>
 </div>
 
-<div id="toast" class="toast">Action confirmée</div>
+<div id="toast" class="toast">Action réussie</div>
 
 <script>
-const KEY = 'altertrack_final_v1';
+const KEY = 'altertrack_import_v1';
 let db = [];
 
-const BT = {attente:'En attente', relance_moi:"Relancé", accepte:'Acceptée', refuse:'Refusée'};
+// 1. GESTION DU FICHIER EXCEL / CSV
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
 
-function load() { 
-    db = JSON.parse(localStorage.getItem(KEY)) || []; 
-    render(); stats();
+fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    handleFile(e.dataTransfer.files[0]);
+});
+
+function handleFile(file) {
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, {type: 'array'});
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(firstSheet);
+        
+        processImport(rows);
+    };
+    reader.readAsArrayBuffer(file);
 }
 
-function save() { 
-    localStorage.setItem(KEY, JSON.stringify(db)); 
-    showToast("✓ Données synchronisées");
+function processImport(rows) {
+    let importedCount = 0;
+    rows.forEach(row => {
+        // Mapping intelligent : cherche les colonnes qui ressemblent à Entreprise ou Poste
+        const ent = row['Entreprise'] || row['entreprise'] || row['Nom'] || row['Société'];
+        const pos = row['Poste'] || row['Intitulé du Poste'] || row['Mission'] || row['Poste visé'];
+        const statut = row['Statut'] || 'attente';
+
+        if(ent && pos) {
+            db.push({
+                id: Math.random().toString(36).substr(2, 9),
+                ent: ent,
+                pos: pos,
+                st: statut.toLowerCase().includes('accept') ? 'accepte' : 'attente',
+                date: new Date().toLocaleDateString('fr-FR')
+            });
+            importedCount++;
+        }
+    });
+    
+    if(importedCount > 0) {
+        save(); render(); stats();
+        showToast(`${importedCount} lignes importées avec succès !`);
+    } else {
+        alert("Désolé, je n'ai pas trouvé de colonnes 'Entreprise' et 'Poste' dans votre fichier.");
+    }
 }
+
+// 2. FONCTIONS DE BASE (COPIÉES DE TA VERSION PRÉCÉDENTE)
+function load() { db = JSON.parse(localStorage.getItem(KEY)) || []; render(); stats(); }
+function save() { localStorage.setItem(KEY, JSON.stringify(db)); }
 
 function add() {
     const e = document.getElementById('fe').value.trim();
     const p = document.getElementById('fp').value.trim();
     if(!e || !p) return;
-    
-    db.unshift({
-        id: Date.now().toString(36),
-        ent: e,
-        pos: p,
-        st: document.getElementById('fs').value
-    });
-    
+    db.unshift({ id: Date.now().toString(36), ent: e, pos: p, st: 'attente', date: new Date().toLocaleDateString('fr-FR') });
     save(); render(); stats();
-    document.getElementById('fe').value = ''; 
-    document.getElementById('fp').value = '';
+    document.getElementById('fe').value = ''; document.getElementById('fp').value = '';
 }
 
 function del(id) {
-    if(confirm("Supprimer définitivement ?")) {
-        db = db.filter(i => i.id !== id);
-        save(); render(); stats();
-    }
+    db = db.filter(i => i.id !== id);
+    save(); render(); stats();
 }
 
 function render() {
     const tb = document.getElementById('tb');
-    if(!db.length) {
-        tb.innerHTML = '<div style="text-align:center; padding:50px; color:var(--muted); background:white; border-radius:12px; border:1px dashed var(--border)">Aucune candidature enregistrée pour le moment.</div>';
-        return;
-    }
     tb.innerHTML = db.map(i => `
         <tr>
             <td>${i.ent}</td>
             <td>${i.pos}</td>
-            <td><span class="badge badge-${i.st}">${BT[i.st]}</span></td>
-            <td><button class="btn-del" onclick="del('${i.id}')">Supprimer</button></td>
+            <td><span class="badge">${i.st}</span></td>
+            <td><button class="btn-del" onclick="del('${i.id}')">Suppr.</button></td>
         </tr>
     `).join('');
 }
 
 function stats() {
-    const total = db.length;
-    const att = db.filter(i => i.st === 'attente' || i.st === 'relance_moi').length;
-    const acc = db.filter(i => i.st === 'accepte').length;
-    
-    document.getElementById('sT').textContent = total;
-    document.getElementById('sA').textContent = att;
-    document.getElementById('sAc').textContent = acc;
-    
-    if(total > 0) {
-        document.getElementById('bA').style.width = (att/total*100) + '%';
-        document.getElementById('bAc').style.width = (acc/total*100) + '%';
-    }
+    document.getElementById('sT').textContent = db.length;
+    document.getElementById('sA').textContent = db.filter(i => i.st === 'attente').length;
+    document.getElementById('sAc').textContent = db.filter(i => i.st === 'accepte').length;
 }
 
 function showToast(m) {
     const t = document.getElementById('toast');
     t.textContent = m; t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2500);
+    setTimeout(() => t.classList.remove('show'), 3000);
 }
 
 function exportExcel() {
-    const ws = XLSX.utils.json_to_sheet(db.map(i => ({ Entreprise: i.ent, Poste: i.pos, Statut: BT[i.st] })));
+    const ws = XLSX.utils.json_to_sheet(db);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Suivi");
+    XLSX.utils.book_append_sheet(wb, ws, "Candidatures");
     XLSX.writeFile(wb, "AlterTrack_Export.xlsx");
 }
 
