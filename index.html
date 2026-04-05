@@ -22,7 +22,6 @@
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body { background: var(--cream); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; min-height: 100vh; font-size: 14px; }
 
-/* TOPBAR */
 .topbar { background: var(--accent); color: #fff; padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
 .logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; display: flex; align-items: center; gap: 12px; }
 .logo::after { content: 'PRO'; font-family: 'IBM Plex Mono', monospace; font-size: .6rem; background: var(--gold); padding: 2px 7px; border-radius: 2px; letter-spacing: 2px; color: #fff; }
@@ -30,19 +29,16 @@ body { background: var(--cream); color: var(--ink); font-family: 'IBM Plex Sans'
 .btn-exp { padding: 7px 15px; border-radius: var(--r); font-family: 'IBM Plex Sans', sans-serif; font-size: .76rem; font-weight: 600; cursor: pointer; border: 1px solid rgba(255,255,255,.3); background: transparent; color: #fff; transition: all .2s; }
 .btn-exp.gold { background: var(--gold); border-color: var(--gold); margin-left: 8px; }
 
-/* HEADER */
 .ph { background: var(--white); border-bottom: 1px solid var(--border); padding: 26px 48px 18px; }
 .ph h1 { font-family: 'Playfair Display', serif; font-size: 1.75rem; font-weight: 700; margin-bottom: 3px; }
 .ph p { font-size: .8rem; color: var(--muted); font-weight: 300; }
 
-/* STATS */
 .stats { display: flex; background: var(--white); border-bottom: 1px solid var(--border); overflow-x: auto; }
 .si { flex: 1; padding: 15px 22px; border-right: 1px solid var(--bl); position: relative; min-width: 120px; }
 .sl { font-size: .67rem; text-transform: uppercase; letter-spacing: 1.8px; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
 .sv { font-family: 'Playfair Display', serif; font-size: 1.85rem; font-weight: 700; line-height: 1; }
 .sb { position: absolute; bottom: 0; left: 0; height: 2px; transition: width .5s; }
 
-/* LAYOUT */
 .layout { display: grid; grid-template-columns: 310px 1fr; min-height: calc(100vh - 168px); }
 .sidebar { background: var(--white); border-right: 1px solid var(--border); padding: 22px; position: sticky; top: 56px; height: calc(100vh - 56px); overflow-y: auto; }
 
@@ -52,28 +48,27 @@ input, select { width: 100%; border: 1px solid var(--border); border-radius: var
 
 .btn-add { width: 100%; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: var(--r); font-weight: 600; cursor: pointer; margin-top: 10px; }
 
-/* TABLE */
 .content { padding: 22px 26px; }
 .tw { background: var(--white); border: 1px solid var(--border); border-radius: var(--rl); overflow: hidden; box-shadow: var(--sh); }
 table { width: 100%; border-collapse: collapse; }
 thead { background: var(--accent); color: #fff; }
 th { padding: 12px; text-align: left; font-size: .64rem; text-transform: uppercase; letter-spacing: 1.4px; }
-td { padding: 12px; border-bottom: 1px solid var(--bl); font-size: .82rem; }
+td { padding: 12px; border-bottom: 1px solid var(--bl); font-size: .82rem; vertical-align: middle; }
 
-.badge { padding: 2px 8px; border-radius: 3px; font-size: .65rem; font-weight: 700; text-transform: uppercase; }
-.badge-attente { background: var(--ybg); color: var(--yellow); }
-.badge-accepte { background: var(--gbg); color: var(--green); }
-.badge-refuse { background: var(--rbg); color: var(--red); }
+/* Statuts specifiques */
+.st-select { font-size: 0.75rem; padding: 4px; border-radius: 4px; border: 1px solid var(--border); background: var(--white); cursor: pointer; font-weight: 500; }
+.st-select.accepte { background: var(--gbg); color: var(--green); border-color: #90d0a8; }
+.st-select.attente { background: var(--ybg); color: var(--yellow); border-color: #e8d090; }
+.st-select.refuse { background: var(--rbg); color: var(--red); border-color: #e0a0a0; }
 
 .link-btn { color: var(--accent); text-decoration: none; font-weight: 600; font-size: 0.75rem; display: inline-flex; align-items: center; gap: 4px; }
-.link-btn:hover { text-decoration: underline; }
 
 @media (max-width: 850px) {
   .layout { grid-template-columns: 1fr; }
   .sidebar { height: auto; position: static; border-right: none; border-bottom: 1px solid var(--border); }
   thead { display: none; }
   tbody tr { display: block; border-bottom: 8px solid var(--cream); padding: 15px; }
-  td { display: block; padding: 4px 0; border: none; }
+  td { display: block; padding: 6px 0; border: none; }
   td:before { content: attr(data-label); font-size: 10px; color: var(--muted); display: block; text-transform: uppercase; font-weight: 700; }
 }
 
@@ -94,7 +89,7 @@ td { padding: 12px; border-bottom: 1px solid var(--bl); font-size: .82rem; }
 
 <div class="ph">
   <h1>Suivi Alternance 2026</h1>
-  <p>Gestionnaire intelligent pour BTS SAM Marseille</p>
+  <p>Gestionnaire local intelligent pour BTS SAM Marseille</p>
 </div>
 
 <div class="stats">
@@ -156,8 +151,17 @@ function add() {
   showToast("Ajouté");
 }
 
+function updateStatus(id, newStatus) {
+  const item = db.find(i => i.id === id);
+  if(item) {
+    item.st = newStatus;
+    save(); render(); stats();
+    showToast("Statut mis à jour");
+  }
+}
+
 function del(id) {
-  if(confirm("Supprimer ?")) { 
+  if(confirm("Supprimer définitivement cette ligne ?")) { 
     db = db.filter(i => i.id !== id); 
     save(); render(); stats(); 
     showToast("Supprimé");
@@ -174,9 +178,17 @@ function render() {
     <tr>
       <td data-label="Entreprise"><strong>${i.ent}</strong></td>
       <td data-label="Poste">${i.pos}</td>
-      <td data-label="Lien">${i.link ? `<a href="${i.link}" target="_blank" class="link-btn">🔗 Voir l'offre</a>` : '-'}</td>
-      <td data-label="Statut"><span class="badge badge-${i.st}">${i.st}</span></td>
-      <td data-label="Action" style="text-align:right"><button onclick="del('${i.id}')" style="background:none; border:none; color:var(--red); font-weight:600; cursor:pointer;">Suppr.</button></td>
+      <td data-label="Lien">${i.link ? `<a href="${i.link}" target="_blank" class="link-btn">🔗 Voir</a>` : '-'}</td>
+      <td data-label="Statut">
+        <select class="st-select ${i.st}" onchange="updateStatus('${i.id}', this.value)">
+          <option value="attente" ${i.st === 'attente' ? 'selected' : ''}>⏳ Attente</option>
+          <option value="accepte" ${i.st === 'accepte' ? 'selected' : ''}>✅ Succès</option>
+          <option value="refuse" ${i.st === 'refuse' ? 'selected' : ''}>❌ Refusé</option>
+        </select>
+      </td>
+      <td data-label="Action" style="text-align:right">
+        <button onclick="del('${i.id}')" style="background:none; border:none; color:var(--red); font-weight:600; cursor:pointer;">Suppr.</button>
+      </td>
     </tr>
   `).join('');
 }
@@ -194,7 +206,6 @@ function stats() {
   }
 }
 
-// IMPORTATION SPÉCIFIQUE POUR TES FICHIERS BTS SAM
 document.getElementById('file-input').addEventListener('change', function(e) {
   const file = e.target.files[0];
   const reader = new FileReader();
@@ -202,35 +213,18 @@ document.getElementById('file-input').addEventListener('change', function(e) {
     const data = new Uint8Array(e.target.result);
     const workbook = XLSX.read(data, {type: 'array'});
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    
-    // On convertit en JSON, mais on va chercher les colonnes à partir de la ligne 3/4 si besoin
     const rows = XLSX.utils.sheet_to_json(sheet, {defval: ""});
-    
     let added = 0;
     rows.forEach(row => {
-      // Nettoyage des colonnes selon ton fichier Excel
       const entreprise = row['Entreprise'] || row['entreprise'] || row['Nom'];
       const poste = row['Intitulé du Poste'] || row['Poste visé'] || row['Poste'];
       const lien = row['Lien'] || row['URL'] || "";
-
       if(entreprise && entreprise !== "Entreprise") { 
-        db.push({
-          id: Math.random().toString(36).substr(2, 9),
-          ent: entreprise,
-          pos: poste || "Poste à préciser",
-          link: lien.includes('http') ? lien : "", // On vérifie si c'est un vrai lien
-          st: 'attente'
-        });
+        db.push({ id: Math.random().toString(36).substr(2, 9), ent: entreprise, pos: poste || "Poste à préciser", link: lien, st: 'attente' });
         added++;
       }
     });
-
-    if(added > 0) {
-      save(); render(); stats();
-      showToast(`${added} lignes importées !`);
-    } else {
-      alert("Erreur: Colonnes 'Entreprise' et 'Poste' introuvables sur la ligne 1.");
-    }
+    if(added > 0) { save(); render(); stats(); showToast(`${added} lignes importées !`); }
   };
   reader.readAsArrayBuffer(file);
 });
