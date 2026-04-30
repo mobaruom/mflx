@@ -167,13 +167,18 @@ box-shadow: 0 0 0 3px rgba(37,99,168,0.1);
 .filters {
 display: flex;
 gap: 8px;
-flex-wrap: wrap;
+flex-wrap: nowrap;
+overflow-x: auto;
 margin-bottom: 28px;
-justify-content: center;
+justify-content: flex-start;
+padding-bottom: 4px;
+-webkit-overflow-scrolling: touch;
+scrollbar-width: none;
 }
+.filters::-webkit-scrollbar { display: none; }
 
 .filter-btn {
-padding: 6px 16px;
+padding: 6px 14px;
 border-radius: 20px;
 border: 1.5px solid var(–border);
 background: var(–surface);
@@ -183,9 +188,21 @@ font-weight: 500;
 cursor: pointer;
 transition: all 0.15s;
 color: var(–text-muted);
+white-space: nowrap;
+flex-shrink: 0;
 }
 
 .filter-btn:hover { border-color: var(–text-muted); color: var(–text); }
+
+.dot {
+display: inline-block;
+width: 7px;
+height: 7px;
+border-radius: 50%;
+margin-right: 6px;
+vertical-align: middle;
+flex-shrink: 0;
+}
 
 .filter-btn.active-all { background: var(–text); color: white; border-color: var(–text); }
 .filter-btn.active-Management { background: var(–mgt); color: white; border-color: var(–mgt); }
@@ -621,9 +638,17 @@ margin-top: 60px;
 @media (max-width: 600px) {
 header { padding: 0 16px; }
 .logo-main { font-size: 18px; }
-main { padding: 28px 16px; }
-.hero h1 { font-size: 26px; }
+main { padding: 24px 16px; }
+.hero { margin-bottom: 24px; }
+.hero h1 { font-size: 24px; margin-bottom: 6px; }
+.hero p { font-size: 13px; margin-bottom: 20px; }
+#searchInput { font-size: 15px; padding: 12px 14px 12px 42px; }
+.filters { margin-left: -16px; margin-right: -16px; padding-left: 16px; padding-right: 16px; }
 .admin-body { padding: 20px 18px; }
+.card { padding: 16px 18px; }
+.card-term { font-size: 16px; }
+.card-def { font-size: 14px; }
+.count-badge { display: none; }
 }
 </style>
 
@@ -659,10 +684,10 @@ main { padding: 28px 16px; }
 
   <div class="filters">
     <button class="filter-btn active-all" onclick="setFilter('all', this)">Tout</button>
-    <button class="filter-btn" onclick="setFilter('Management', this)">📘 Management</button>
-    <button class="filter-btn" onclick="setFilter('Droit', this)">⚖️ Droit</button>
-    <button class="filter-btn" onclick="setFilter('Économie', this)">📊 Économie</button>
-    <button class="filter-btn" onclick="setFilter('RH', this)">👥 RH</button>
+    <button class="filter-btn" onclick="setFilter('Management', this)"><span class="dot" style="background:var(--mgt)"></span>Management</button>
+    <button class="filter-btn" onclick="setFilter('Droit', this)"><span class="dot" style="background:var(--drt)"></span>Droit</button>
+    <button class="filter-btn" onclick="setFilter('Économie', this)"><span class="dot" style="background:var(--eco)"></span>Économie</button>
+    <button class="filter-btn" onclick="setFilter('RH', this)"><span class="dot" style="background:var(--rh)"></span>RH</button>
   </div>
 
   <div class="results-info" id="resultsInfo"></div>
