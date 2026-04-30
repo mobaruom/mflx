@@ -1,201 +1,1028 @@
 <!DOCTYPE html>
+
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AlterTrack PWA</title>
-
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#1a3a5c">
-
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LexiProf — Dictionnaire STMG</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --cream:#f8f5ef; --white:#fff; --ink:#1a1a1a; --muted:#8a8a8a;
-  --border:#d8d2c8; --bl:#ece8e0; --accent:#1a3a5c; --gold:#c9932a;
-  --green:#2d6a4f; --gbg:#eaf4ef; --red:#8b2020; --rbg:#fdf0f0;
-  --yellow:#8a6200; --ybg:#fdf8e8; --r:12px;
+  :root {
+    --bg: #f7f5f0;
+    --surface: #ffffff;
+    --surface2: #f0ede6;
+    --border: #e2ddd5;
+    --text: #1a1814;
+    --text-muted: #7a7570;
+    --mgt: #2563a8;
+    --mgt-light: #dbeafe;
+    --drt: #b45309;
+    --drt-light: #fef3c7;
+    --eco: #166534;
+    --eco-light: #dcfce7;
+    --rh: #7c3aed;
+    --rh-light: #ede9fe;
+    --accent: #2563a8;
+    --shadow: 0 2px 12px rgba(0,0,0,0.07);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.1);
+    --radius: 12px;
+  }
+
+- { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+font-family: ‘DM Sans’, sans-serif;
+background: var(–bg);
+color: var(–text);
+min-height: 100vh;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { background: var(--cream); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; font-size: 16px; padding-bottom: 40px; }
+/* HEADER */
+header {
+background: var(–surface);
+border-bottom: 1px solid var(–border);
+padding: 0 32px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+height: 64px;
+position: sticky;
+top: 0;
+z-index: 100;
+box-shadow: var(–shadow);
+}
 
-/* NAVBAR FIXE */
-.topbar { background: var(--accent); color: #fff; padding: env(safe-area-inset-top) 15px 10px; position: sticky; top: 0; z-index: 1000; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-.logo { font-family: 'Playfair Display', serif; font-size: 1.1rem; }
+.logo {
+display: flex;
+align-items: baseline;
+gap: 4px;
+}
 
-.btn-nav { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; cursor: pointer; }
+.logo-main {
+font-family: ‘Lora’, serif;
+font-size: 22px;
+font-weight: 600;
+color: var(–text);
+letter-spacing: -0.5px;
+}
 
-/* STATS */
-.header-stats { background: var(--white); padding: 20px 15px; border-bottom: 1px solid var(--border); }
-.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.stat-card { background: var(--cream); padding: 10px; border-radius: 10px; text-align: center; border: 1px solid var(--bl); }
-.stat-val { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; display: block; }
-.stat-lab { font-size: 0.6rem; text-transform: uppercase; color: var(--muted); letter-spacing: 1px; }
+.logo-tag {
+font-size: 11px;
+font-weight: 500;
+color: var(–text-muted);
+text-transform: uppercase;
+letter-spacing: 1px;
+}
 
-/* FORMULAIRE */
-.container { padding: 15px; max-width: 800px; margin: 0 auto; }
-.card { background: var(--white); padding: 20px; border-radius: var(--r); border: 1px solid var(--border); margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-.input-group { margin-bottom: 15px; }
-input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); font-size: 1rem; background: #fafafa; outline: none; }
-.btn-main { width: 100%; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 1rem; }
+.header-right {
+display: flex;
+align-items: center;
+gap: 12px;
+}
 
-/* LISTE */
-.item-card { background: var(--white); padding: 15px; border-radius: var(--r); border: 1px solid var(--border); margin-bottom: 15px; position: relative; }
-.item-ent { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 2px; }
-.item-pos { font-size: 0.9rem; color: var(--muted); margin-bottom: 12px; }
+.count-badge {
+font-size: 13px;
+color: var(–text-muted);
+font-weight: 400;
+}
 
-.st-btn { width: 100%; padding: 10px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; border: 1px solid var(--border); margin-bottom: 10px; }
-.st-btn.attente { background: var(--ybg); color: var(--yellow); }
-.st-btn.accepte { background: var(--gbg); color: var(--green); }
-.st-btn.refuse { background: var(--rbg); color: var(--red); }
+.btn-admin {
+background: var(–text);
+color: white;
+border: none;
+padding: 8px 16px;
+border-radius: 8px;
+font-family: inherit;
+font-size: 13px;
+font-weight: 500;
+cursor: pointer;
+transition: opacity 0.15s;
+}
+.btn-admin:hover { opacity: 0.8; }
 
-.btn-row { display: flex; gap: 10px; }
-.link-a { flex: 2; text-align: center; background: var(--bl); padding: 8px; border-radius: 6px; text-decoration: none; color: var(--accent); font-weight: 600; font-size: 0.8rem; }
-.del-btn { flex: 1; background: none; border: none; color: var(--red); font-size: 0.75rem; font-weight: 600; }
+/* MAIN LAYOUT */
+main {
+max-width: 860px;
+margin: 0 auto;
+padding: 40px 24px;
+}
 
-.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: #333; color: white; padding: 10px 20px; border-radius: 50px; transition: 0.4s; z-index: 2000; font-size: 0.8rem; }
-.toast.show { transform: translateX(-50%) translateY(0); }
+/* HERO SEARCH */
+.hero {
+text-align: center;
+margin-bottom: 40px;
+}
+
+.hero h1 {
+font-family: ‘Lora’, serif;
+font-size: 36px;
+font-weight: 600;
+color: var(–text);
+margin-bottom: 8px;
+letter-spacing: -0.5px;
+}
+
+.hero p {
+color: var(–text-muted);
+font-size: 15px;
+margin-bottom: 28px;
+}
+
+.search-wrap {
+position: relative;
+max-width: 560px;
+margin: 0 auto;
+}
+
+.search-icon {
+position: absolute;
+left: 16px;
+top: 50%;
+transform: translateY(-50%);
+color: var(–text-muted);
+pointer-events: none;
+}
+
+#searchInput {
+width: 100%;
+padding: 14px 16px 14px 46px;
+font-family: ‘DM Sans’, sans-serif;
+font-size: 16px;
+border: 2px solid var(–border);
+border-radius: var(–radius);
+background: var(–surface);
+color: var(–text);
+outline: none;
+transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#searchInput:focus {
+border-color: var(–accent);
+box-shadow: 0 0 0 3px rgba(37,99,168,0.1);
+}
+
+#searchInput::placeholder { color: #b0aba4; }
+
+/* FILTERS */
+.filters {
+display: flex;
+gap: 8px;
+flex-wrap: wrap;
+margin-bottom: 28px;
+justify-content: center;
+}
+
+.filter-btn {
+padding: 6px 16px;
+border-radius: 20px;
+border: 1.5px solid var(–border);
+background: var(–surface);
+font-family: inherit;
+font-size: 13px;
+font-weight: 500;
+cursor: pointer;
+transition: all 0.15s;
+color: var(–text-muted);
+}
+
+.filter-btn:hover { border-color: var(–text-muted); color: var(–text); }
+
+.filter-btn.active-all { background: var(–text); color: white; border-color: var(–text); }
+.filter-btn.active-Management { background: var(–mgt); color: white; border-color: var(–mgt); }
+.filter-btn.active-Droit { background: var(–drt); color: white; border-color: var(–drt); }
+.filter-btn.active-Économie { background: var(–eco); color: white; border-color: var(–eco); }
+.filter-btn.active-RH { background: var(–rh); color: white; border-color: var(–rh); }
+
+/* RESULTS INFO */
+.results-info {
+font-size: 13px;
+color: var(–text-muted);
+margin-bottom: 16px;
+min-height: 20px;
+}
+
+/* CARDS */
+.cards {
+display: flex;
+flex-direction: column;
+gap: 14px;
+}
+
+.card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: var(–radius);
+padding: 20px 22px;
+box-shadow: var(–shadow);
+transition: transform 0.15s, box-shadow 0.15s;
+animation: fadeIn 0.2s ease;
+}
+
+.card:hover {
+transform: translateY(-1px);
+box-shadow: var(–shadow-lg);
+}
+
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(6px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.card-top {
+display: flex;
+align-items: flex-start;
+justify-content: space-between;
+margin-bottom: 10px;
+gap: 12px;
+}
+
+.card-term {
+font-family: ‘Lora’, serif;
+font-size: 18px;
+font-weight: 600;
+color: var(–text);
+line-height: 1.3;
+}
+
+.card-term mark {
+background: #fff3b0;
+color: inherit;
+border-radius: 3px;
+padding: 0 1px;
+}
+
+.matiere-badge {
+font-size: 11px;
+font-weight: 600;
+padding: 3px 10px;
+border-radius: 20px;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+flex-shrink: 0;
+}
+
+.badge-Management { background: var(–mgt-light); color: var(–mgt); }
+.badge-Droit { background: var(–drt-light); color: var(–drt); }
+.badge-Économie { background: var(–eco-light); color: var(–eco); }
+.badge-RH { background: var(–rh-light); color: var(–rh); }
+
+.card-def {
+font-size: 14.5px;
+line-height: 1.7;
+color: #3a3530;
+}
+
+.card-def mark {
+background: #fff3b0;
+color: inherit;
+border-radius: 3px;
+padding: 0 1px;
+}
+
+/* EMPTY STATE */
+.empty-state {
+text-align: center;
+padding: 60px 20px;
+color: var(–text-muted);
+}
+
+.empty-state svg { margin-bottom: 16px; opacity: 0.4; }
+.empty-state h3 { font-size: 18px; font-weight: 500; margin-bottom: 6px; color: var(–text); }
+.empty-state p { font-size: 14px; }
+
+/* MODAL OVERLAY */
+.overlay {
+display: none;
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.45);
+z-index: 200;
+align-items: center;
+justify-content: center;
+padding: 20px;
+}
+.overlay.open { display: flex; }
+
+/* ADMIN PANEL */
+.admin-panel {
+background: var(–surface);
+border-radius: 16px;
+width: 100%;
+max-width: 600px;
+max-height: 88vh;
+overflow-y: auto;
+box-shadow: var(–shadow-lg);
+animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+from { opacity: 0; transform: translateY(20px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.admin-header {
+padding: 24px 28px 20px;
+border-bottom: 1px solid var(–border);
+display: flex;
+justify-content: space-between;
+align-items: center;
+position: sticky;
+top: 0;
+background: var(–surface);
+z-index: 1;
+}
+
+.admin-header h2 {
+font-family: ‘Lora’, serif;
+font-size: 20px;
+font-weight: 600;
+}
+
+.btn-close {
+background: var(–surface2);
+border: none;
+width: 32px;
+height: 32px;
+border-radius: 50%;
+cursor: pointer;
+font-size: 18px;
+display: flex;
+align-items: center;
+justify-content: center;
+color: var(–text-muted);
+transition: background 0.15s;
+}
+.btn-close:hover { background: var(–border); }
+
+.admin-body { padding: 24px 28px; }
+
+/* FORM */
+.form-section {
+background: var(–surface2);
+border-radius: var(–radius);
+padding: 20px;
+margin-bottom: 24px;
+}
+
+.form-section h3 {
+font-size: 14px;
+font-weight: 600;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+color: var(–text-muted);
+margin-bottom: 16px;
+}
+
+.form-row { margin-bottom: 14px; }
+
+.form-row label {
+display: block;
+font-size: 13px;
+font-weight: 500;
+margin-bottom: 6px;
+color: var(–text);
+}
+
+.form-row input,
+.form-row select,
+.form-row textarea {
+width: 100%;
+padding: 10px 14px;
+font-family: ‘DM Sans’, sans-serif;
+font-size: 14px;
+border: 1.5px solid var(–border);
+border-radius: 8px;
+background: var(–surface);
+color: var(–text);
+outline: none;
+transition: border-color 0.2s;
+}
+
+.form-row textarea { resize: vertical; min-height: 90px; }
+
+.form-row input:focus,
+.form-row select:focus,
+.form-row textarea:focus { border-color: var(–accent); }
+
+.btn-add {
+width: 100%;
+padding: 12px;
+background: var(–text);
+color: white;
+border: none;
+border-radius: 8px;
+font-family: inherit;
+font-size: 14px;
+font-weight: 600;
+cursor: pointer;
+transition: opacity 0.15s;
+margin-top: 4px;
+}
+.btn-add:hover { opacity: 0.85; }
+
+/* LIST IN ADMIN */
+.admin-list-title {
+font-size: 14px;
+font-weight: 600;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+color: var(–text-muted);
+margin-bottom: 14px;
+}
+
+.admin-item {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 12px 14px;
+border: 1px solid var(–border);
+border-radius: 8px;
+margin-bottom: 8px;
+background: var(–surface);
+gap: 12px;
+}
+
+.admin-item-info { flex: 1; min-width: 0; }
+
+.admin-item-term {
+font-weight: 600;
+font-size: 14px;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+
+.admin-item-meta {
+font-size: 12px;
+color: var(–text-muted);
+margin-top: 2px;
+}
+
+.btn-del {
+background: #fee2e2;
+color: #dc2626;
+border: none;
+width: 30px;
+height: 30px;
+border-radius: 6px;
+cursor: pointer;
+font-size: 14px;
+display: flex;
+align-items: center;
+justify-content: center;
+flex-shrink: 0;
+transition: background 0.15s;
+}
+.btn-del:hover { background: #fecaca; }
+
+/* PASSWORD MODAL */
+.pwd-modal {
+background: var(–surface);
+border-radius: 16px;
+width: 100%;
+max-width: 360px;
+padding: 36px 32px;
+box-shadow: var(–shadow-lg);
+animation: slideUp 0.2s ease;
+text-align: center;
+}
+
+.pwd-modal .lock-icon {
+width: 52px;
+height: 52px;
+background: var(–surface2);
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+margin: 0 auto 16px;
+font-size: 22px;
+}
+
+.pwd-modal h2 {
+font-family: ‘Lora’, serif;
+font-size: 20px;
+font-weight: 600;
+margin-bottom: 6px;
+}
+
+.pwd-modal p {
+font-size: 13px;
+color: var(–text-muted);
+margin-bottom: 22px;
+}
+
+.pwd-input-wrap { position: relative; margin-bottom: 12px; }
+
+#pwdInput {
+width: 100%;
+padding: 12px 16px;
+font-family: ‘DM Sans’, sans-serif;
+font-size: 15px;
+border: 2px solid var(–border);
+border-radius: 8px;
+background: var(–surface);
+color: var(–text);
+outline: none;
+text-align: center;
+letter-spacing: 3px;
+transition: border-color 0.2s;
+}
+#pwdInput:focus { border-color: var(–accent); }
+#pwdInput.error { border-color: #dc2626; animation: shake 0.3s; }
+
+@keyframes shake {
+0%,100% { transform: translateX(0); }
+25% { transform: translateX(-6px); }
+75% { transform: translateX(6px); }
+}
+
+.pwd-error {
+font-size: 12px;
+color: #dc2626;
+min-height: 18px;
+margin-bottom: 12px;
+}
+
+.btn-unlock {
+width: 100%;
+padding: 12px;
+background: var(–text);
+color: white;
+border: none;
+border-radius: 8px;
+font-family: inherit;
+font-size: 14px;
+font-weight: 600;
+cursor: pointer;
+transition: opacity 0.15s;
+}
+.btn-unlock:hover { opacity: 0.85; }
+
+.pwd-cancel {
+margin-top: 12px;
+font-size: 13px;
+color: var(–text-muted);
+background: none;
+border: none;
+cursor: pointer;
+font-family: inherit;
+}
+.pwd-cancel:hover { color: var(–text); }
+
+/* ADMIN — change pwd section */
+.change-pwd-section {
+border-top: 1px solid var(–border);
+padding-top: 20px;
+margin-top: 8px;
+}
+
+.change-pwd-toggle {
+font-size: 13px;
+color: var(–text-muted);
+background: none;
+border: none;
+cursor: pointer;
+font-family: inherit;
+text-decoration: underline;
+padding: 0;
+}
+
+.change-pwd-form { margin-top: 14px; display: none; }
+.change-pwd-form.open { display: block; }
+.toast {
+position: fixed;
+bottom: 24px;
+right: 24px;
+background: var(–text);
+color: white;
+padding: 12px 20px;
+border-radius: 8px;
+font-size: 14px;
+font-weight: 500;
+z-index: 999;
+opacity: 0;
+transform: translateY(10px);
+transition: all 0.3s;
+pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+
+/* FOOTER */
+footer {
+text-align: center;
+padding: 32px;
+color: var(–text-muted);
+font-size: 13px;
+border-top: 1px solid var(–border);
+margin-top: 60px;
+}
+
+@media (max-width: 600px) {
+header { padding: 0 16px; }
+.logo-main { font-size: 18px; }
+main { padding: 28px 16px; }
+.hero h1 { font-size: 26px; }
+.admin-body { padding: 20px 18px; }
+}
 </style>
+
 </head>
 <body>
 
-<div class="topbar">
-  <div class="logo">AlterTrack</div>
-  <div style="display: flex; gap: 5px;">
-    <button class="btn-nav" onclick="document.getElementById('file-input').click()">📁 Import</button>
-    <button class="btn-nav" onclick="exportExcel()">⬇ Export</button>
+<header>
+  <div class="logo">
+    <span class="logo-main">LexiProf</span>
+    <span class="logo-tag">&nbsp;· STMG</span>
   </div>
-  <input type="file" id="file-input" hidden accept=".xlsx, .xls, .csv">
+  <div class="header-right">
+    <span class="count-badge" id="totalCount"></span>
+    <button class="btn-admin" onclick="openAdmin()">⚙ Admin</button>
+  </div>
+</header>
+
+<main>
+  <div class="hero">
+    <h1>Dictionnaire STMG</h1>
+    <p>Retrouve toutes les définitions de Management, Droit, Économie et RH</p>
+
+```
+<div class="search-wrap">
+  <svg class="search-icon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+  </svg>
+  <input type="text" id="searchInput" placeholder="Rechercher un terme…" oninput="onSearch()" autocomplete="off">
+</div>
+```
+
+  </div>
+
+  <div class="filters">
+    <button class="filter-btn active-all" onclick="setFilter('all', this)">Tout</button>
+    <button class="filter-btn" onclick="setFilter('Management', this)">📘 Management</button>
+    <button class="filter-btn" onclick="setFilter('Droit', this)">⚖️ Droit</button>
+    <button class="filter-btn" onclick="setFilter('Économie', this)">📊 Économie</button>
+    <button class="filter-btn" onclick="setFilter('RH', this)">👥 RH</button>
+  </div>
+
+  <div class="results-info" id="resultsInfo"></div>
+  <div class="cards" id="cardsContainer"></div>
+</main>
+
+<!-- ADMIN OVERLAY -->
+
+<div class="overlay" id="overlay" onclick="handleOverlayClick(event)">
+  <div class="admin-panel" id="adminPanel">
+    <div class="admin-header">
+      <h2>Interface Admin</h2>
+      <button class="btn-close" onclick="closeAdmin()">✕</button>
+    </div>
+    <div class="admin-body">
+
+```
+  <div class="form-section">
+    <h3>Ajouter une définition</h3>
+    <div class="form-row">
+      <label>Terme</label>
+      <input type="text" id="formTerm" placeholder="Ex : Leadership">
+    </div>
+    <div class="form-row">
+      <label>Matière</label>
+      <select id="formMatiere">
+        <option value="Management">Management</option>
+        <option value="Droit">Droit</option>
+        <option value="Économie">Économie</option>
+        <option value="RH">RH</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label>Définition</label>
+      <textarea id="formDef" placeholder="Saisir la définition complète…"></textarea>
+    </div>
+    <button class="btn-add" onclick="addDefinition()">+ Ajouter</button>
+  </div>
+
+  <div>
+    <div class="admin-list-title">Définitions enregistrées (<span id="adminCount">0</span>)</div>
+    <div id="adminList"></div>
+  </div>
+  <div class="change-pwd-section">
+    <button class="change-pwd-toggle" onclick="toggleChangePwd()">🔑 Changer le mot de passe admin</button>
+    <div class="change-pwd-form" id="changePwdForm">
+      <div class="form-row" style="margin-top:12px">
+        <label>Nouveau mot de passe</label>
+        <input type="password" id="newPwd1" placeholder="Nouveau mot de passe">
+      </div>
+      <div class="form-row">
+        <label>Confirmer</label>
+        <input type="password" id="newPwd2" placeholder="Répéter le mot de passe">
+      </div>
+      <button class="btn-add" onclick="changePassword()" style="background:#7c3aed">Enregistrer le nouveau mot de passe</button>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
 </div>
 
-<div class="header-stats">
-  <div class="stats-grid">
-    <div class="stat-card"><span class="stat-val" id="sT">0</span><span class="stat-lab">Total</span></div>
-    <div class="stat-card"><span class="stat-val" id="sA" style="color:var(--yellow)">0</span><span class="stat-lab">Attente</span></div>
-    <div class="stat-card"><span class="stat-val" id="sAc" style="color:var(--green)">0</span><span class="stat-lab">Succès</span></div>
+<!-- PASSWORD OVERLAY -->
+
+<div class="overlay" id="pwdOverlay">
+  <div class="pwd-modal">
+    <div class="lock-icon">🔒</div>
+    <h2>Accès Admin</h2>
+    <p>Entrez le mot de passe pour accéder à l'interface d'administration.</p>
+    <div class="pwd-input-wrap">
+      <input type="password" id="pwdInput" placeholder="••••••••" onkeydown="if(event.key==='Enter') checkPassword()">
+    </div>
+    <div class="pwd-error" id="pwdError"></div>
+    <button class="btn-unlock" onclick="checkPassword()">Déverrouiller</button>
+    <br>
+    <button class="pwd-cancel" onclick="closePwdModal()">Annuler</button>
   </div>
 </div>
 
-<div class="container">
-  <div class="card">
-    <div class="input-group"><input id="fe" type="text" placeholder="Entreprise"></div>
-    <div class="input-group"><input id="fp" type="text" placeholder="Poste"></div>
-    <div class="input-group"><input id="fl" type="text" placeholder="Lien (optionnel)"></div>
-    <button class="btn-main" onclick="add()">+ Ajouter à la liste</button>
-  </div>
+<div class="toast" id="toast"></div>
 
-  <div id="list-container"></div>
-</div>
-
-<div id="toast" class="toast">Action réussie</div>
+<footer>LexiProf · Synchronisé via JSONbin · Définitions partagées pour tous</footer>
 
 <script>
-const DB_NAME = 'altertrack_mobile_v2';
-let data = JSON.parse(localStorage.getItem(DB_NAME)) || [];
+// ── CONFIG JSONBIN ────────────────────────────────────────
+const BIN_ID    = '69f31bf4aaba882197556e92';
+const ACCESS_KEY = '$2a$10$bC.x0kcg6YXik32STxh46eVPotxbT4crJZk52XLnrHA5i7kkt1RbC';
+const BIN_URL   = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+const HEADERS_READ  = { 'X-Access-Key': ACCESS_KEY };
+const HEADERS_WRITE = { 'X-Access-Key': ACCESS_KEY, 'Content-Type': 'application/json' };
 
-function save() { localStorage.setItem(DB_NAME, JSON.stringify(data)); render(); stats(); }
+const PWD_KEY = 'lexiprof_admin_pwd';
+const DEFAULT_PASSWORD = 'admin123';
 
-function add() {
-  const ent = document.getElementById('fe').value.trim();
-  const pos = document.getElementById('fp').value.trim();
-  const link = document.getElementById('fl').value.trim();
-  if(!ent || !pos) return;
-  data.unshift({ id: Date.now(), ent, pos, link, st: 'attente' });
-  save();
-  document.getElementById('fe').value = ''; document.getElementById('fp').value = ''; document.getElementById('fl').value = '';
-  showToast("Ajouté !");
+const defaultData = [
+  { id: 1, term: "Management", matiere: "Management", def: "Ensemble des techniques de direction, d'organisation et de gestion d'une entreprise visant à atteindre des objectifs fixés en utilisant efficacement les ressources disponibles." },
+  { id: 2, term: "Leadership", matiere: "Management", def: "Capacité d'une personne à guider, influencer et motiver un groupe d'individus vers la réalisation d'objectifs communs, en inspirant confiance et adhésion." },
+  { id: 3, term: "Organigramme", matiere: "Management", def: "Représentation graphique de la structure hiérarchique et fonctionnelle d'une organisation, montrant les liens d'autorité et de communication entre les différents postes." },
+  { id: 4, term: "Contrat de travail", matiere: "Droit", def: "Convention par laquelle une personne (le salarié) s'engage à travailler pour le compte et sous la direction d'une autre personne (l'employeur) en échange d'une rémunération." },
+  { id: 5, term: "Personne morale", matiere: "Droit", def: "Entité juridique distincte des personnes physiques qui la composent, dotée de droits et d'obligations propres, telle qu'une société, une association ou une collectivité publique." },
+  { id: 6, term: "PIB", matiere: "Économie", def: "Produit Intérieur Brut. Indicateur macroéconomique mesurant la valeur totale des biens et services produits sur le territoire national au cours d'une période donnée." },
+  { id: 7, term: "Inflation", matiere: "Économie", def: "Hausse généralisée et durable du niveau des prix des biens et services dans une économie, entraînant une diminution du pouvoir d'achat de la monnaie." },
+  { id: 8, term: "Recrutement", matiere: "RH", def: "Processus par lequel une organisation identifie, attire et sélectionne des candidats qualifiés pour pourvoir un poste vacant, en adéquation avec ses besoins et sa culture d'entreprise." },
+  { id: 9, term: "GPEC", matiere: "RH", def: "Gestion Prévisionnelle des Emplois et des Compétences. Démarche prospective visant à anticiper les besoins en ressources humaines d'une organisation à moyen terme afin d'adapter les effectifs et les compétences." },
+];
+
+let definitions = [];
+let currentFilter = 'all';
+let searchQuery = '';
+
+// ── JSONBIN : LECTURE ─────────────────────────────────────
+async function load() {
+  setLoading(true);
+  try {
+    const res = await fetch(BIN_URL + '/latest', { headers: HEADERS_READ });
+    if (!res.ok) throw new Error('Erreur lecture');
+    const data = await res.json();
+    const defs = data.record?.definitions;
+    if (Array.isArray(defs) && defs.length > 0) {
+      definitions = defs;
+    } else {
+      // Bin vide → on pousse les données de démo
+      definitions = [...defaultData];
+      await saveRemote();
+    }
+  } catch (e) {
+    console.warn('JSONbin inaccessible, fallback localStorage', e);
+    const stored = localStorage.getItem('lexiprof_fallback');
+    definitions = stored ? JSON.parse(stored) : [...defaultData];
+  }
+  setLoading(false);
+  render();
 }
 
-function updateStatus(id, st) {
-  const idx = data.findIndex(i => i.id === id);
-  if(idx > -1) { data[idx].st = st; save(); showToast("Statut mis à jour"); }
+// ── JSONBIN : ÉCRITURE ────────────────────────────────────
+async function saveRemote() {
+  try {
+    const res = await fetch(BIN_URL, {
+      method: 'PUT',
+      headers: HEADERS_WRITE,
+      body: JSON.stringify({ definitions })
+    });
+    if (!res.ok) throw new Error('Erreur écriture');
+    // Backup local au cas où
+    localStorage.setItem('lexiprof_fallback', JSON.stringify(definitions));
+  } catch (e) {
+    console.warn('Sauvegarde JSONbin échouée', e);
+    showToast('⚠️ Erreur de sauvegarde en ligne.');
+  }
 }
 
-function del(id) {
-  if(confirm("Supprimer ?")) { data = data.filter(i => i.id !== id); save(); }
+function nextId() {
+  return definitions.length > 0 ? Math.max(...definitions.map(d => d.id)) + 1 : 1;
+}
+
+function getPassword() {
+  return localStorage.getItem(PWD_KEY) || DEFAULT_PASSWORD;
+}
+
+// ── LOADING STATE ─────────────────────────────────────────
+function setLoading(state) {
+  const container = document.getElementById('cardsContainer');
+  const info = document.getElementById('resultsInfo');
+  if (state) {
+    info.textContent = '';
+    container.innerHTML = `
+      <div class="empty-state">
+        <div style="font-size:32px;margin-bottom:12px">⏳</div>
+        <h3>Chargement…</h3>
+        <p>Récupération des définitions en ligne.</p>
+      </div>`;
+  }
+}
+
+// ── RENDER ────────────────────────────────────────────────
+function highlight(text, query) {
+  if (!query) return text;
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
 }
 
 function render() {
-  const container = document.getElementById('list-container');
-  if(data.length === 0) {
-    container.innerHTML = `<div style="text-align:center; padding:40px; color:gray;">Aucune donnée. Importez votre Excel !</div>`;
+  const q = searchQuery.toLowerCase().trim();
+  let filtered = definitions;
+
+  if (currentFilter !== 'all') filtered = filtered.filter(d => d.matiere === currentFilter);
+  if (q) filtered = filtered.filter(d => d.term.toLowerCase().includes(q) || d.def.toLowerCase().includes(q));
+
+  filtered.sort((a, b) => a.term.localeCompare(b.term, 'fr'));
+
+  const container = document.getElementById('cardsContainer');
+  const info = document.getElementById('resultsInfo');
+
+  if (q || currentFilter !== 'all') {
+    info.textContent = `${filtered.length} résultat${filtered.length !== 1 ? 's' : ''}`;
+  } else {
+    info.textContent = '';
+  }
+
+  document.getElementById('totalCount').textContent = `${definitions.length} définition${definitions.length !== 1 ? 's' : ''}`;
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <h3>Aucun résultat</h3>
+        <p>Essaie un autre terme ou change le filtre de matière.</p>
+      </div>`;
     return;
   }
-  container.innerHTML = data.map(i => `
-    <div class="item-card">
-      <div class="item-ent">${i.ent}</div>
-      <div class="item-pos">${i.pos}</div>
-      
-      <select class="st-btn ${i.st}" onchange="updateStatus(${i.id}, this.value)">
-        <option value="attente" ${i.st==='attente'?'selected':''}>⏳ En attente</option>
-        <option value="accepte" ${i.st==='accepte'?'selected':''}>✅ Succès / Accepté</option>
-        <option value="refuse" ${i.st==='refuse'?'selected':''}>❌ Refusé</option>
-      </select>
 
-      <div class="btn-row">
-        ${i.link ? `<a href="${i.link}" target="_blank" class="link-a">🔗 Voir l'offre</a>` : '<div class="link-a" style="opacity:0.3">Pas de lien</div>'}
-        <button class="del-btn" onclick="del(${i.id})">Supprimer</button>
+  container.innerHTML = filtered.map(d => `
+    <div class="card">
+      <div class="card-top">
+        <div class="card-term">${highlight(d.term, q)}</div>
+        <span class="matiere-badge badge-${d.matiere}">${d.matiere}</span>
       </div>
+      <div class="card-def">${highlight(d.def, q)}</div>
     </div>
   `).join('');
 }
 
-function stats() {
-  document.getElementById('sT').innerText = data.length;
-  document.getElementById('sA').innerText = data.filter(i => i.st === 'attente').length;
-  document.getElementById('sAc').innerText = data.filter(i => i.st === 'accepte').length;
+function onSearch() {
+  searchQuery = document.getElementById('searchInput').value;
+  render();
 }
 
-// IMPORTATION ROBUSTE POUR TÉLÉPHONE
-document.getElementById('file-input').onchange = function(e) {
-  const file = e.target.files[0];
-  if(!file) return;
-  
-  const reader = new FileReader();
-  reader.onload = function(ex) {
-    try {
-      const arr = new Uint8Array(ex.target.result);
-      const wb = XLSX.read(arr, {type: 'array'});
-      const sheet = wb.Sheets[wb.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json(sheet);
-      
-      let count = 0;
-      rows.forEach(r => {
-        const ent = r['Entreprise'] || r['entreprise'] || r['Nom'];
-        const pos = r['Intitulé du Poste'] || r['Poste visé'] || r['Poste'];
-        const link = r['Lien'] || r['URL'] || "";
-        if(ent && pos) {
-          data.push({ id: Math.random(), ent, pos, link, st: 'attente' });
-          count++;
-        }
-      });
-      if(count > 0) { save(); showToast(count + " lignes importées !"); }
-      else { alert("Colonnes 'Entreprise' et 'Poste' non trouvées."); }
-    } catch(err) {
-      alert("Erreur lors de la lecture du fichier.");
-    }
-  };
-  reader.readAsArrayBuffer(file);
-};
+function setFilter(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => { b.className = 'filter-btn'; });
+  btn.className = `filter-btn active-${filter === 'all' ? 'all' : filter}`;
+  render();
+}
 
-function showToast(m) {
+// ── PASSWORD MODAL ────────────────────────────────────────
+function openAdmin() {
+  document.getElementById('pwdInput').value = '';
+  document.getElementById('pwdError').textContent = '';
+  document.getElementById('pwdInput').classList.remove('error');
+  document.getElementById('pwdOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('pwdInput').focus(), 100);
+}
+
+function closePwdModal() {
+  document.getElementById('pwdOverlay').classList.remove('open');
+}
+
+function checkPassword() {
+  const input = document.getElementById('pwdInput').value;
+  if (input === getPassword()) {
+    closePwdModal();
+    openAdminPanel();
+  } else {
+    const field = document.getElementById('pwdInput');
+    document.getElementById('pwdError').textContent = 'Mot de passe incorrect.';
+    field.classList.add('error');
+    field.value = '';
+    setTimeout(() => field.classList.remove('error'), 400);
+  }
+}
+
+// ── ADMIN PANEL ───────────────────────────────────────────
+function openAdminPanel() {
+  renderAdminList();
+  document.getElementById('changePwdForm').classList.remove('open');
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeAdmin() {
+  document.getElementById('overlay').classList.remove('open');
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('overlay')) closeAdmin();
+}
+
+function renderAdminList() {
+  const list = document.getElementById('adminList');
+  const sorted = [...definitions].sort((a, b) => a.term.localeCompare(b.term, 'fr'));
+  document.getElementById('adminCount').textContent = definitions.length;
+
+  if (sorted.length === 0) {
+    list.innerHTML = '<p style="color:var(--text-muted);font-size:14px;text-align:center;padding:20px 0">Aucune définition enregistrée.</p>';
+    return;
+  }
+
+  list.innerHTML = sorted.map(d => `
+    <div class="admin-item">
+      <div class="admin-item-info">
+        <div class="admin-item-term">${d.term}</div>
+        <div class="admin-item-meta">${d.matiere}</div>
+      </div>
+      <button class="btn-del" onclick="deleteDefinition(${d.id})" title="Supprimer">✕</button>
+    </div>
+  `).join('');
+}
+
+async function addDefinition() {
+  const term = document.getElementById('formTerm').value.trim();
+  const matiere = document.getElementById('formMatiere').value;
+  const def = document.getElementById('formDef').value.trim();
+
+  if (!term || !def) { showToast('⚠️ Remplis le terme et la définition !'); return; }
+
+  const exists = definitions.find(d => d.term.toLowerCase() === term.toLowerCase() && d.matiere === matiere);
+  if (exists) { showToast('⚠️ Ce terme existe déjà dans cette matière.'); return; }
+
+  definitions.push({ id: nextId(), term, matiere, def });
+  showToast('⏳ Sauvegarde en cours…');
+  await saveRemote();
+  render();
+  renderAdminList();
+  document.getElementById('formTerm').value = '';
+  document.getElementById('formDef').value = '';
+  showToast('✅ Définition ajoutée et synchronisée !');
+}
+
+async function deleteDefinition(id) {
+  if (!confirm('Supprimer cette définition ?')) return;
+  definitions = definitions.filter(d => d.id !== id);
+  showToast('⏳ Suppression en cours…');
+  await saveRemote();
+  render();
+  renderAdminList();
+  showToast('🗑 Définition supprimée.');
+}
+
+// ── CHANGE PASSWORD ───────────────────────────────────────
+function toggleChangePwd() {
+  document.getElementById('changePwdForm').classList.toggle('open');
+}
+
+function changePassword() {
+  const p1 = document.getElementById('newPwd1').value;
+  const p2 = document.getElementById('newPwd2').value;
+  if (!p1) { showToast('⚠️ Saisis un nouveau mot de passe.'); return; }
+  if (p1.length < 4) { showToast('⚠️ Minimum 4 caractères.'); return; }
+  if (p1 !== p2) { showToast('⚠️ Les mots de passe ne correspondent pas.'); return; }
+  localStorage.setItem(PWD_KEY, p1);
+  document.getElementById('newPwd1').value = '';
+  document.getElementById('newPwd2').value = '';
+  document.getElementById('changePwdForm').classList.remove('open');
+  showToast('🔑 Mot de passe mis à jour !');
+}
+
+// ── TOAST ─────────────────────────────────────────────────
+function showToast(msg) {
   const t = document.getElementById('toast');
-  t.innerText = m; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-function exportExcel() {
-  const ws = XLSX.utils.json_to_sheet(data);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Suivi");
-  XLSX.writeFile(wb, "Mon_Suivi_Alternance.xlsx");
-}
-
-window.onload = load;
+// INIT
+load();
 </script>
+
 </body>
 </html>
