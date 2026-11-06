@@ -2,942 +2,830 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LexiProf — Dictionnaire STMG</title>
-<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1220">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Perso">
+<title>Perso</title>
+<link rel="manifest" id="manifest-link">
+<link rel="icon" id="favicon">
+<link rel="apple-touch-icon" id="apple-icon">
 <style>
-  :root {
-    --bg: #f7f5f0;
-    --surface: #ffffff;
-    --surface2: #f0ede6;
-    --border: #e2ddd5;
-    --text: #1a1814;
-    --text-muted: #7a7570;
-    --mgt: #2563a8;
-    --mgt-light: #dbeafe;
-    --drt: #b45309;
-    --drt-light: #fef3c7;
-    --eco: #166534;
-    --eco-light: #dcfce7;
-    --rh: #7c3aed;
-    --rh-light: #ede9fe;
-    --accent: #2563a8;
-    --shadow: 0 2px 12px rgba(0,0,0,0.07);
-    --shadow-lg: 0 8px 32px rgba(0,0,0,0.1);
-    --radius: 12px;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-  }
-
-  /* HEADER */
-  header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 60px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: var(--shadow);
-  }
-
-  .logo {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-  }
-
-  .logo-main {
-    font-family: 'Lora', serif;
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--text);
-    letter-spacing: -0.5px;
-  }
-
-  .logo-tag {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  .btn-admin {
-    background: var(--text);
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: opacity 0.15s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .btn-admin:hover { opacity: 0.8; }
-
-  /* MAIN */
-  main {
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 32px 16px;
-  }
-
-  /* HERO */
-  .hero {
-    text-align: center;
-    margin-bottom: 28px;
-  }
-
-  .hero h1 {
-    font-family: 'Lora', serif;
-    font-size: 30px;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 6px;
-    letter-spacing: -0.5px;
-  }
-
-  .hero p {
-    color: var(--text-muted);
-    font-size: 14px;
-    margin-bottom: 22px;
-  }
-
-  /* SEARCH */
-  .search-wrap {
-    position: relative;
-    max-width: 500px;
-    margin: 0 auto;
-  }
-
-  .search-icon {
-    position: absolute;
-    left: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-muted);
-    pointer-events: none;
-  }
-
-  #searchInput {
-    width: 100%;
-    padding: 13px 14px 13px 42px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    border: 2px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--surface);
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    -webkit-appearance: none;
-  }
-
-  #searchInput:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(37,99,168,0.1);
-  }
-
-  #searchInput::placeholder { color: #b0aba4; }
-
-  /* FILTERS */
-  .filters {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    margin: 20px 0;
-    padding-bottom: 2px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .filters::-webkit-scrollbar { display: none; }
-
-  .filter-btn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 14px;
-    border-radius: 20px;
-    border: 1.5px solid var(--border);
-    background: var(--surface);
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s;
-    color: var(--text-muted);
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  .filter-btn:active { transform: scale(0.97); }
-
-  .dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .filter-btn.active { background: var(--active-color); color: white; border-color: var(--active-color); }
-  .filter-btn.active .dot { background: rgba(255,255,255,0.6); }
-
-  /* RESULTS INFO */
-  .results-info {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-bottom: 14px;
-    min-height: 18px;
-  }
-
-  /* CARDS */
-  .cards {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 18px 18px;
-    box-shadow: var(--shadow);
-    transition: transform 0.15s, box-shadow 0.15s;
-    animation: fadeIn 0.2s ease;
-  }
-
-  .card:active { transform: scale(0.99); }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .card-top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 8px;
-    gap: 10px;
-  }
-
-  .card-term {
-    font-family: 'Lora', serif;
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--text);
-    line-height: 1.3;
-  }
-
-  .card-term mark {
-    background: #fff3b0;
-    color: inherit;
-    border-radius: 3px;
-    padding: 0 1px;
-  }
-
-  .matiere-badge {
-    font-size: 10px;
-    font-weight: 700;
-    padding: 3px 9px;
-    border-radius: 20px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    flex-shrink: 0;
-  }
-
-  .badge-Management { background: var(--mgt-light); color: var(--mgt); }
-  .badge-Droit      { background: var(--drt-light); color: var(--drt); }
-  .badge-Économie   { background: var(--eco-light); color: var(--eco); }
-  .badge-RH         { background: var(--rh-light);  color: var(--rh);  }
-
-  .card-def {
-    font-size: 14px;
-    line-height: 1.65;
-    color: #3a3530;
-  }
-
-  .card-def mark {
-    background: #fff3b0;
-    color: inherit;
-    border-radius: 3px;
-    padding: 0 1px;
-  }
-
-  /* EMPTY / LOADING STATE */
-  .empty-state {
-    text-align: center;
-    padding: 50px 20px;
-    color: var(--text-muted);
-  }
-
-  .empty-state .icon { font-size: 36px; margin-bottom: 12px; }
-  .empty-state h3 { font-size: 17px; font-weight: 500; margin-bottom: 5px; color: var(--text); }
-  .empty-state p { font-size: 13px; }
-
-  /* MODAL OVERLAY */
-  .overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.45);
-    z-index: 200;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-  }
-  .overlay.open { display: flex; }
-
-  /* ADMIN PANEL */
-  .admin-panel {
-    background: var(--surface);
-    border-radius: 16px;
-    width: 100%;
-    max-width: 560px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: var(--shadow-lg);
-    animation: slideUp 0.2s ease;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .admin-header {
-    padding: 20px 22px 16px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    background: var(--surface);
-    z-index: 1;
-  }
-
-  .admin-header h2 {
-    font-family: 'Lora', serif;
-    font-size: 18px;
-    font-weight: 600;
-  }
-
-  .btn-close {
-    background: var(--surface2);
-    border: none;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-muted);
-  }
-
-  .admin-body { padding: 20px 22px; }
-
-  .form-section {
-    background: var(--surface2);
-    border-radius: var(--radius);
-    padding: 18px;
-    margin-bottom: 20px;
-  }
-
-  .form-section h3 {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--text-muted);
-    margin-bottom: 14px;
-  }
-
-  .form-row { margin-bottom: 12px; }
-
-  .form-row label {
-    display: block;
-    font-size: 13px;
-    font-weight: 500;
-    margin-bottom: 5px;
-  }
-
-  .form-row input,
-  .form-row select,
-  .form-row textarea {
-    width: 100%;
-    padding: 10px 12px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    background: var(--surface);
-    color: var(--text);
-    outline: none;
-    -webkit-appearance: none;
-    transition: border-color 0.2s;
-  }
-
-  .form-row textarea { resize: vertical; min-height: 80px; }
-  .form-row input:focus, .form-row select:focus, .form-row textarea:focus { border-color: var(--accent); }
-
-  .btn-add {
-    width: 100%;
-    padding: 11px;
-    background: var(--text);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 4px;
-  }
-
-  .admin-list-title {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--text-muted);
-    margin-bottom: 12px;
-  }
-
-  .admin-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 11px 12px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    margin-bottom: 7px;
-    gap: 10px;
-  }
-
-  .admin-item-term { font-weight: 600; font-size: 14px; }
-  .admin-item-meta { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
-
-  .btn-del {
-    background: #fee2e2;
-    color: #dc2626;
-    border: none;
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 13px;
-    flex-shrink: 0;
-  }
-
-  /* CHANGE PWD */
-  .change-pwd-section {
-    border-top: 1px solid var(--border);
-    padding-top: 18px;
-    margin-top: 6px;
-  }
-
-  .change-pwd-toggle {
-    font-size: 13px;
-    color: var(--text-muted);
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-    text-decoration: underline;
-    padding: 0;
-  }
-
-  .change-pwd-form { margin-top: 14px; display: none; }
-  .change-pwd-form.open { display: block; }
-
-  /* PASSWORD MODAL */
-  .pwd-modal {
-    background: var(--surface);
-    border-radius: 16px;
-    width: 100%;
-    max-width: 340px;
-    padding: 32px 28px;
-    box-shadow: var(--shadow-lg);
-    animation: slideUp 0.2s ease;
-    text-align: center;
-  }
-
-  .lock-icon {
-    width: 48px;
-    height: 48px;
-    background: var(--surface2);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 14px;
-    font-size: 20px;
-  }
-
-  .pwd-modal h2 { font-family: 'Lora', serif; font-size: 18px; font-weight: 600; margin-bottom: 5px; }
-  .pwd-modal p  { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
-
-  #pwdInput {
-    width: 100%;
-    padding: 12px 14px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 16px;
-    border: 2px solid var(--border);
-    border-radius: 8px;
-    background: var(--surface);
-    color: var(--text);
-    outline: none;
-    text-align: center;
-    letter-spacing: 3px;
-    margin-bottom: 8px;
-    -webkit-appearance: none;
-  }
-  #pwdInput:focus { border-color: var(--accent); }
-  #pwdInput.error { border-color: #dc2626; animation: shake 0.3s; }
-
-  @keyframes shake {
-    0%,100% { transform: translateX(0); }
-    25%      { transform: translateX(-6px); }
-    75%      { transform: translateX(6px); }
-  }
-
-  .pwd-error { font-size: 12px; color: #dc2626; min-height: 16px; margin-bottom: 10px; }
-
-  .btn-unlock {
-    width: 100%;
-    padding: 12px;
-    background: var(--text);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-
-  .pwd-cancel {
-    margin-top: 12px;
-    font-size: 13px;
-    color: var(--text-muted);
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-  }
-
-  /* TOAST */
-  .toast {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%) translateY(10px);
-    background: var(--text);
-    color: white;
-    padding: 11px 20px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 500;
-    z-index: 999;
-    opacity: 0;
-    transition: all 0.3s;
-    pointer-events: none;
-    white-space: nowrap;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-  footer {
-    text-align: center;
-    padding: 28px 16px;
-    color: var(--text-muted);
-    font-size: 12px;
-    border-top: 1px solid var(--border);
-    margin-top: 48px;
-  }
+:root{
+  --bg:#0b1220;--bg2:#0f172a;--card:#15203a;--card-hover:#1b2844;
+  --text:#e6eefc;--muted:#8592ad;--accent:#38bdf8;--green:#22c55e;
+  --yellow:#f59e0b;--red:#ef4444;--border:#223050;--radius:14px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;height:100%}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  font-size:15px;line-height:1.4;display:flex;flex-direction:column;
+  min-height:100vh;min-height:100dvh;overscroll-behavior-y:contain;
+}
+#app{flex:1;display:flex;flex-direction:column;max-width:900px;width:100%;margin:0 auto;
+  padding-bottom:calc(64px + env(safe-area-inset-bottom))}
+header{
+  position:sticky;top:0;background:rgba(11,18,32,.92);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  padding:calc(12px + env(safe-area-inset-top)) 16px 12px;
+  border-bottom:1px solid var(--border);z-index:10;
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+}
+header h1{margin:0;font-size:17px;font-weight:700;letter-spacing:.2px}
+header .brand{font-size:11px;color:var(--muted);font-weight:600}
+main{padding:16px;flex:1}
+nav.tabbar{
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(15,23,42,.96);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-top:1px solid var(--border);display:flex;
+  padding:6px 4px calc(6px + env(safe-area-inset-bottom));gap:2px;
+  z-index:20;overflow-x:auto;scrollbar-width:none;
+}
+nav.tabbar::-webkit-scrollbar{display:none}
+nav.tabbar button{
+  flex:1 0 auto;min-width:42px;background:transparent;border:none;
+  color:var(--muted);padding:5px 2px;border-radius:10px;
+  display:flex;flex-direction:column;align-items:center;gap:1px;
+  font-size:9px;font-family:inherit;cursor:pointer;font-weight:500;
+}
+nav.tabbar button .ico{font-size:18px;line-height:1}
+nav.tabbar button.active{color:var(--accent);background:rgba(56,189,248,.1)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px}
+.card h3{margin:0 0 10px;font-size:14px;font-weight:700}
+.muted{color:var(--muted);font-size:13px}
+.row{display:flex;align-items:center;gap:8px}
+.row.between{justify-content:space-between}
+.row.wrap{flex-wrap:wrap}
+.btn{
+  background:var(--accent);color:#001018;border:none;
+  padding:9px 14px;border-radius:10px;font-family:inherit;
+  font-size:14px;font-weight:600;cursor:pointer;line-height:1;
+}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn.small{padding:6px 10px;font-size:12px}
+.btn.danger{background:var(--red);color:#fff}
+.btn.green{background:var(--green);color:#001018}
+input,textarea,select{
+  background:var(--bg2);color:var(--text);border:1px solid var(--border);
+  border-radius:10px;padding:10px 12px;font-family:inherit;
+  font-size:14px;width:100%;outline:none;
+}
+input:focus,textarea:focus,select:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:80px}
+label.field{display:block;margin-bottom:10px}
+label.field span{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+details.add-form{margin-bottom:12px}
+details.add-form>summary{
+  cursor:pointer;list-style:none;background:var(--card);
+  border:1px dashed var(--border);border-radius:var(--radius);
+  padding:12px;text-align:center;color:var(--accent);
+  font-weight:600;font-size:14px;
+}
+details.add-form>summary::-webkit-details-marker{display:none}
+details.add-form[open]>summary{margin-bottom:10px;border-style:solid}
+.grid{display:grid;gap:8px;grid-template-columns:1fr 1fr}
+@media(max-width:480px){.grid{grid-template-columns:1fr}}
+.pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.pill.todo{background:rgba(245,158,11,.15);color:var(--yellow)}
+.pill.doing{background:rgba(56,189,248,.15);color:var(--accent)}
+.pill.done{background:rgba(34,197,94,.15);color:var(--green)}
+.pill.a_voir{background:rgba(245,158,11,.15);color:var(--yellow)}
+.pill.en_cours{background:rgba(56,189,248,.15);color:var(--accent)}
+.pill.vu{background:rgba(34,197,94,.15);color:var(--green)}
+.bar{height:8px;background:var(--bg2);border-radius:4px;overflow:hidden;margin-top:8px}
+.bar>div{height:100%;background:var(--accent);border-radius:4px;transition:width .3s}
+.bar.green>div{background:var(--green)}
+.bar.warn>div{background:var(--yellow)}
+.bar.danger>div{background:var(--red)}
+.item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:10px}
+.item .title{font-weight:600;font-size:14px}
+.item .meta{font-size:12px;color:var(--muted);margin-top:4px}
+.item .actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.icon-btn{background:transparent;border:1px solid var(--border);color:var(--muted);
+  width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:14px;
+  display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.icon-btn:hover{color:var(--text);border-color:var(--muted)}
+.actions button{font-size:12px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:12px}
+.cal-dow{text-align:center;font-size:11px;color:var(--muted);padding:4px 0;font-weight:600}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  border-radius:8px;cursor:pointer;font-size:13px;border:1px solid transparent;
+  position:relative;background:var(--card)}
+.cal-day.empty{background:transparent;cursor:default}
+.cal-day.today{border-color:var(--accent)}
+.cal-day.selected{background:var(--accent);color:#001018;font-weight:700}
+.cal-day.has-events::after{content:'';position:absolute;bottom:3px;width:4px;height:4px;border-radius:50%;background:var(--accent)}
+.cal-day.selected.has-events::after{background:#001018}
+.stars{font-size:20px;cursor:pointer;user-select:none;letter-spacing:2px;line-height:1}
+.stars .on{color:var(--yellow)}
+.stars .off{color:var(--muted)}
+.totals{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px}
+.stat .v{font-size:20px;font-weight:700;margin-top:2px}
+.stat .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:480px){.dash-grid{grid-template-columns:1fr}}
+.dash-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:14px;cursor:pointer;transition:background .15s}
+.dash-card:hover{background:var(--card-hover)}
+.dash-card .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.dash-card .head .muted{font-size:11px;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.dash-card .num{font-size:26px;font-weight:700;line-height:1.1}
+.dash-card .sub{font-size:12px;color:var(--muted);margin-top:2px}
+.empty{text-align:center;color:var(--muted);padding:24px 10px;font-size:14px}
+.toast{position:fixed;bottom:calc(76px + env(safe-area-inset-bottom));left:50%;
+  transform:translateX(-50%) translateY(20px);background:var(--green);color:#001018;
+  padding:10px 18px;border-radius:10px;font-weight:600;font-size:13px;
+  opacity:0;pointer-events:none;transition:all .25s;z-index:100;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+summary.act{list-style:none;display:inline-block;cursor:pointer}
+summary.act::-webkit-details-marker{display:none}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 </style>
 </head>
 <body>
-
-<header>
-  <div class="logo">
-    <span class="logo-main">LexiProf</span>
-    <span class="logo-tag">· STMG</span>
-  </div>
-  <button class="btn-admin" onclick="openAdmin()">⚙ Admin</button>
-</header>
-
-<main>
-  <div class="hero">
-    <h1>Dictionnaire STMG</h1>
-    <p>Retrouve toutes les définitions de Management, Droit, Économie et RH</p>
-    <div class="search-wrap">
-      <svg class="search-icon" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-      </svg>
-      <input type="text" id="searchInput" placeholder="Rechercher un terme…" oninput="onSearch()" autocomplete="off">
-    </div>
-  </div>
-
-  <div class="filters">
-    <button class="filter-btn active" style="--active-color:var(--text)" onclick="setFilter('all',this)">Tout</button>
-    <button class="filter-btn" style="--active-color:var(--mgt)" onclick="setFilter('Management',this)">
-      <span class="dot" style="background:var(--mgt)"></span>Management
-    </button>
-    <button class="filter-btn" style="--active-color:var(--drt)" onclick="setFilter('Droit',this)">
-      <span class="dot" style="background:var(--drt)"></span>Droit
-    </button>
-    <button class="filter-btn" style="--active-color:var(--eco)" onclick="setFilter('Économie',this)">
-      <span class="dot" style="background:var(--eco)"></span>Économie
-    </button>
-    <button class="filter-btn" style="--active-color:var(--rh)" onclick="setFilter('RH',this)">
-      <span class="dot" style="background:var(--rh)"></span>RH
-    </button>
-  </div>
-
-  <div class="results-info" id="resultsInfo"></div>
-  <div class="cards" id="cardsContainer"></div>
-</main>
-
-<!-- ADMIN OVERLAY -->
-<div class="overlay" id="overlay" onclick="handleOverlayClick(event)">
-  <div class="admin-panel" id="adminPanel">
-    <div class="admin-header">
-      <h2>Interface Admin</h2>
-      <button class="btn-close" onclick="closeAdmin()">✕</button>
-    </div>
-    <div class="admin-body">
-
-      <div class="form-section">
-        <h3>Ajouter une définition</h3>
-        <div class="form-row">
-          <label>Terme</label>
-          <input type="text" id="formTerm" placeholder="Ex : Leadership">
-        </div>
-        <div class="form-row">
-          <label>Matière</label>
-          <select id="formMatiere">
-            <option value="Management">Management</option>
-            <option value="Droit">Droit</option>
-            <option value="Économie">Économie</option>
-            <option value="RH">RH</option>
-          </select>
-        </div>
-        <div class="form-row">
-          <label>Définition</label>
-          <textarea id="formDef" placeholder="Saisir la définition complète…"></textarea>
-        </div>
-        <button class="btn-add" onclick="addDefinition()">+ Ajouter</button>
-      </div>
-
-      <div>
-        <div class="admin-list-title">Définitions enregistrées (<span id="adminCount">0</span>)</div>
-        <div id="adminList"></div>
-      </div>
-
-      <div class="change-pwd-section">
-        <button class="change-pwd-toggle" onclick="toggleChangePwd()">🔑 Changer le mot de passe admin</button>
-        <div class="change-pwd-form" id="changePwdForm">
-          <div class="form-row" style="margin-top:12px">
-            <label>Nouveau mot de passe</label>
-            <input type="password" id="newPwd1" placeholder="Nouveau mot de passe">
-          </div>
-          <div class="form-row">
-            <label>Confirmer</label>
-            <input type="password" id="newPwd2" placeholder="Répéter">
-          </div>
-          <button class="btn-add" onclick="changePassword()" style="background:var(--rh)">Enregistrer</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
+<div id="app">
+  <header>
+    <h1 id="title">Tableau de bord</h1>
+    <span class="brand">PERSO</span>
+  </header>
+  <main id="view"></main>
+  <nav class="tabbar"></nav>
 </div>
-
-<!-- PASSWORD OVERLAY -->
-<div class="overlay" id="pwdOverlay">
-  <div class="pwd-modal">
-    <div class="lock-icon">🔒</div>
-    <h2>Accès Admin</h2>
-    <p>Entrez le mot de passe pour accéder à l'interface.</p>
-    <input type="password" id="pwdInput" placeholder="••••••••" onkeydown="if(event.key==='Enter') checkPassword()">
-    <div class="pwd-error" id="pwdError"></div>
-    <button class="btn-unlock" onclick="checkPassword()">Déverrouiller</button>
-    <br>
-    <button class="pwd-cancel" onclick="closePwdModal()">Annuler</button>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<footer>LexiProf · Synchronisé via JSONbin · Définitions partagées pour tous</footer>
-
 <script>
-const BIN_ID     = '69f31bf4aaba882197556e92';
-const ACCESS_KEY = '$2a$10$bC.x0kcg6YXik32STxh46eVPotxbT4crJZk52XLnrHA5i7kkt1RbC';
-const BIN_URL    = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
-const HEADERS_R  = { 'X-Access-Key': ACCESS_KEY, 'X-Bin-Meta': 'false' };
-const HEADERS_W  = { 'X-Access-Key': ACCESS_KEY, 'Content-Type': 'application/json' };
-const PWD_KEY    = 'lexiprof_admin_pwd';
-const DEFAULT_PW = 'admin123';
+/* ============ Data ============ */
+const DB_KEY = 'perso_v1';
+const defaultData = {
+  tasks: [], events: [], goals: [], envelopes: [], media: [], templates: [],
+  car: { info: { make:'', model:'', plate:'', year:'' }, entries: [] }
+};
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function today(){ return new Date().toISOString().slice(0,10); }
+function esc(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function money(n){ return (Number(n)||0).toLocaleString('fr-FR',{minimumFractionDigits:0,maximumFractionDigits:2}) + ' €'; }
+function fmtDate(iso){ if(!iso) return ''; const p=iso.split('-'); return p.length===3 ? `${p[2]}/${p[1]}/${p[0]}` : iso; }
+function num(n){ return (Number(n)||0).toLocaleString('fr-FR'); }
 
-const defaultData = [
-  { id:1, term:"Management",      matiere:"Management", def:"Ensemble des techniques de direction, d'organisation et de gestion d'une entreprise visant à atteindre des objectifs fixés en utilisant efficacement les ressources disponibles." },
-  { id:2, term:"Leadership",      matiere:"Management", def:"Capacité d'une personne à guider, influencer et motiver un groupe d'individus vers la réalisation d'objectifs communs, en inspirant confiance et adhésion." },
-  { id:3, term:"Organigramme",    matiere:"Management", def:"Représentation graphique de la structure hiérarchique et fonctionnelle d'une organisation, montrant les liens d'autorité et de communication entre les différents postes." },
-  { id:4, term:"Contrat de travail", matiere:"Droit",   def:"Convention par laquelle une personne (le salarié) s'engage à travailler pour le compte et sous la direction d'une autre personne (l'employeur) en échange d'une rémunération." },
-  { id:5, term:"Personne morale", matiere:"Droit",      def:"Entité juridique distincte des personnes physiques qui la composent, dotée de droits et d'obligations propres, telle qu'une société, une association ou une collectivité publique." },
-  { id:6, term:"PIB",             matiere:"Économie",   def:"Produit Intérieur Brut. Indicateur macroéconomique mesurant la valeur totale des biens et services produits sur le territoire national au cours d'une période donnée." },
-  { id:7, term:"Inflation",       matiere:"Économie",   def:"Hausse généralisée et durable du niveau des prix des biens et services dans une économie, entraînant une diminution du pouvoir d'achat de la monnaie." },
-  { id:8, term:"Recrutement",     matiere:"RH",         def:"Processus par lequel une organisation identifie, attire et sélectionne des candidats qualifiés pour pourvoir un poste vacant, en adéquation avec ses besoins et sa culture d'entreprise." },
-  { id:9, term:"GPEC",            matiere:"RH",         def:"Gestion Prévisionnelle des Emplois et des Compétences. Démarche prospective visant à anticiper les besoins en ressources humaines d'une organisation à moyen terme afin d'adapter les effectifs et les compétences." },
-];
-
-let definitions = [];
-let currentFilter = 'all';
-let searchQuery = '';
-
-// ── JSONBIN ───────────────────────────────────────────────
-async function load() {
-  setLoading(true);
+let data = (function(){
   try {
-    const res = await fetch(BIN_URL + '/latest', { headers: HEADERS_R });
-    if (!res.ok) throw new Error(res.status);
-    const data = await res.json();
-    const defs = data?.definitions ?? data?.record?.definitions ?? null;
-    if (Array.isArray(defs) && defs.length > 0) {
-      definitions = defs;
-    } else {
-      definitions = [...defaultData];
-      await saveRemote();
-    }
-  } catch(e) {
-    console.warn('JSONbin inaccessible, fallback localStorage', e);
-    const stored = localStorage.getItem('lexiprof_fallback');
-    definitions = stored ? JSON.parse(stored) : [...defaultData];
+    const raw = localStorage.getItem(DB_KEY);
+    if(!raw) return clone(defaultData);
+    return Object.assign(clone(defaultData), JSON.parse(raw));
+  } catch { return clone(defaultData); }
+})();
+function save(){ try { localStorage.setItem(DB_KEY, JSON.stringify(data)); } catch(e){ toast('Stockage plein'); } }
+
+/* ============ State ============ */
+const state = {
+  view: 'dashboard',
+  calYear: new Date().getFullYear(),
+  calMonth: new Date().getMonth(),
+  selectedDay: today(),
+  taskFilter: 'all',
+  mediaFilter: 'all'
+};
+
+const TITLES = {
+  dashboard:'Tableau de bord', tasks:'Tâches', calendar:'Calendrier',
+  goals:'Objectifs', budget:'Budget', car:'Voiture', media:'Médias', templates:'Templates'
+};
+
+/* ============ Render ============ */
+function render(){
+  document.getElementById('title').textContent = TITLES[state.view];
+  document.querySelectorAll('nav.tabbar button').forEach(b => b.classList.toggle('active', b.dataset.view === state.view));
+  const v = state.view;
+  const map = { dashboard:viewDashboard, tasks:viewTasks, calendar:viewCalendar,
+    goals:viewGoals, budget:viewBudget, car:viewCar, media:viewMedia, templates:viewTemplates };
+  document.getElementById('view').innerHTML = map[v]();
+}
+
+/* ============ Views ============ */
+function viewDashboard(){
+  const openTasks = data.tasks.filter(t => t.status !== 'done').length;
+  const nextEv = [...data.events].filter(e => e.date >= today())
+    .sort((a,b)=> ((a.date||'')+' '+(a.time||'')).localeCompare((b.date||'')+' '+(b.time||'')))[0];
+  const goalsDone = data.goals.filter(g => Number(g.current) >= Number(g.target)).length;
+  const totalBudget = data.envelopes.reduce((s,e)=>s+Number(e.budget||0),0);
+  const totalSpent  = data.envelopes.reduce((s,e)=>s+Number(e.spent||0),0);
+  const carTotal = (data.car.entries||[]).reduce((s,e)=>s+Number(e.cost||0),0);
+  const mediaToWatch = data.media.filter(m => m.status === 'a_voir').length;
+
+  return `
+  <div class="dash-grid">
+    <div class="dash-card" data-nav="tasks">
+      <div class="head"><span class="muted">Tâches ouvertes</span><span>✅</span></div>
+      <div class="num">${openTasks}</div>
+    </div>
+    <div class="dash-card" data-nav="calendar">
+      <div class="head"><span class="muted">Prochain événement</span><span>📅</span></div>
+      <div style="font-size:14px;font-weight:600">${nextEv ? esc(nextEv.title) : 'Aucun'}</div>
+      <div class="sub">${nextEv ? fmtDate(nextEv.date)+(nextEv.time?' · '+esc(nextEv.time):'') : '—'}</div>
+    </div>
+    <div class="dash-card" data-nav="goals">
+      <div class="head"><span class="muted">Objectifs atteints</span><span>🎯</span></div>
+      <div class="num">${goalsDone}/${data.goals.length}</div>
+    </div>
+    <div class="dash-card" data-nav="budget">
+      <div class="head"><span class="muted">Budget dépensé</span><span>💶</span></div>
+      <div class="num" style="color:${totalSpent>totalBudget?'var(--red)':'var(--green)'}">${money(totalSpent)}</div>
+      <div class="sub">sur ${money(totalBudget)}</div>
+    </div>
+    <div class="dash-card" data-nav="car">
+      <div class="head"><span class="muted">Voiture — total</span><span>🚗</span></div>
+      <div class="num">${money(carTotal)}</div>
+      <div class="sub">${(data.car.entries||[]).length} entrée(s)</div>
+    </div>
+    <div class="dash-card" data-nav="media">
+      <div class="head"><span class="muted">À voir</span><span>🎬</span></div>
+      <div class="num">${mediaToWatch}</div>
+    </div>
+  </div>
+  <div style="margin-top:18px">
+    <button class="btn ghost" style="width:100%;margin-bottom:8px" data-action="export">⬇ Exporter les données (JSON)</button>
+    <button class="btn ghost" style="width:100%;margin-bottom:8px" data-action="import">⬆ Importer (JSON)</button>
+    <button class="btn danger" style="width:100%" data-action="reset">Réinitialiser toutes les données</button>
+  </div>
+  <p class="muted" style="text-align:center;margin-top:18px;font-size:12px">
+    Toutes les données restent sur cet appareil (localStorage).
+  </p>`;
+}
+
+function viewTasks(){
+  const f = state.taskFilter;
+  const counts = { all: data.tasks.length, todo:0, doing:0, done:0 };
+  data.tasks.forEach(t => counts[t.status] = (counts[t.status]||0)+1);
+  const list = data.tasks.filter(t => f === 'all' || t.status === f);
+  const labels = { todo:'À faire', doing:'En cours', done:'Terminée' };
+  const prio = { haute:'🔴 Haute', normale:'🟡 Normale', basse:'🟢 Basse' };
+
+  return `
+  <div class="row wrap" style="margin-bottom:12px;gap:6px">
+    ${['all','todo','doing','done'].map(k => `
+      <button class="btn ${f===k?'':'ghost'} small" data-action="task-filter" data-filter="${k}">
+        ${k==='all'?'Toutes':labels[k]} (${counts[k]||0})
+      </button>`).join('')}
+  </div>
+  <details class="add-form">
+    <summary>+ Nouvelle tâche</summary>
+    <form data-form="task">
+      <label class="field"><span>Titre</span><input name="title" required></label>
+      <div class="grid">
+        <label class="field"><span>Projet</span><input name="project"></label>
+        <label class="field"><span>Priorité</span>
+          <select name="priority">
+            <option value="basse">Basse</option>
+            <option value="normale" selected>Normale</option>
+            <option value="haute">Haute</option>
+          </select>
+        </label>
+      </div>
+      <div class="grid">
+        <label class="field"><span>Échéance</span><input type="date" name="due"></label>
+        <label class="field"><span>Statut</span>
+          <select name="status">
+            <option value="todo" selected>À faire</option>
+            <option value="doing">En cours</option>
+            <option value="done">Terminée</option>
+          </select>
+        </label>
+      </div>
+      <button class="btn" type="submit">Ajouter</button>
+    </form>
+  </details>
+  ${list.length ? list.map(t => `
+    <div class="item">
+      <div class="row between">
+        <div class="title" style="${t.status==='done'?'text-decoration:line-through;opacity:.55':''}">${esc(t.title)}</div>
+        <span class="pill ${t.status}">${labels[t.status]}</span>
+      </div>
+      <div class="meta">
+        ${t.project ? '📁 '+esc(t.project)+' · ' : ''}
+        ${t.due ? '📅 '+fmtDate(t.due)+' · ' : ''}
+        ${prio[t.priority] || ''}
+      </div>
+      <div class="actions">
+        ${t.status!=='todo' ? `<button class="btn ghost small" data-action="task-status" data-id="${t.id}" data-status="todo">↩ À faire</button>`:''}
+        ${t.status!=='doing'? `<button class="btn ghost small" data-action="task-status" data-id="${t.id}" data-status="doing">▶ En cours</button>`:''}
+        ${t.status!=='done' ? `<button class="btn green small" data-action="task-status" data-id="${t.id}" data-status="done">✓ Terminer</button>`:''}
+        <button class="btn danger small" data-action="task-del" data-id="${t.id}">🗑</button>
+      </div>
+    </div>`).join('') : '<div class="empty">Aucune tâche</div>'}`;
+}
+
+function viewCalendar(){
+  const y = state.calYear, m = state.calMonth;
+  const first = new Date(y, m, 1);
+  const startDow = (first.getDay() + 6) % 7;
+  const dim = new Date(y, m+1, 0).getDate();
+  const monthNames = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const dows = ['L','M','M','J','V','S','D'];
+  const eventsByDate = {};
+  data.events.forEach(e => { (eventsByDate[e.date] = eventsByDate[e.date]||[]).push(e); });
+
+  let cells = '';
+  for(let i=0;i<startDow;i++) cells += '<div class="cal-day empty"></div>';
+  for(let d=1; d<=dim; d++){
+    const iso = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const cls = ['cal-day'];
+    if(iso===today()) cls.push('today');
+    if(iso===state.selectedDay) cls.push('selected');
+    if(eventsByDate[iso]) cls.push('has-events');
+    cells += `<div class="${cls.join(' ')}" data-action="cal-select" data-date="${iso}">${d}</div>`;
   }
-  setLoading(false);
-  render();
+  const dayEvents = (eventsByDate[state.selectedDay]||[]).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+
+  return `
+  <div class="row between" style="margin-bottom:12px">
+    <button class="icon-btn" data-action="cal-prev" aria-label="précédent">‹</button>
+    <div style="font-weight:700">${monthNames[m]} ${y}</div>
+    <button class="icon-btn" data-action="cal-next" aria-label="suivant">›</button>
+  </div>
+  <div class="cal-grid">
+    ${dows.map(d=>`<div class="cal-dow">${d}</div>`).join('')}
+    ${cells}
+  </div>
+  <div class="card">
+    <h3>${fmtDate(state.selectedDay)}</h3>
+    ${dayEvents.length ? dayEvents.map(e=>`
+      <div class="item" style="margin-bottom:8px">
+        <div class="row between">
+          <div>
+            <div class="title">${esc(e.title)}</div>
+            ${e.time?`<div class="meta">🕐 ${esc(e.time)}</div>`:''}
+            ${e.notes?`<div class="meta">${esc(e.notes)}</div>`:''}
+          </div>
+          <button class="icon-btn" data-action="event-del" data-id="${e.id}">🗑</button>
+        </div>
+      </div>`).join('') : '<div class="empty" style="padding:10px">Aucun événement ce jour</div>'}
+    <details class="add-form" style="margin-top:10px;margin-bottom:0">
+      <summary>+ Événement</summary>
+      <form data-form="event">
+        <label class="field"><span>Titre</span><input name="title" required></label>
+        <div class="grid">
+          <label class="field"><span>Date</span><input type="date" name="date" value="${state.selectedDay}" required></label>
+          <label class="field"><span>Heure</span><input type="time" name="time"></label>
+        </div>
+        <label class="field"><span>Notes</span><textarea name="notes" rows="2"></textarea></label>
+        <button class="btn" type="submit">Ajouter</button>
+      </form>
+    </details>
+  </div>`;
 }
 
-async function saveRemote() {
-  try {
-    const res = await fetch(BIN_URL, {
-      method: 'PUT',
-      headers: HEADERS_W,
-      body: JSON.stringify({ definitions })
-    });
-    if (!res.ok) throw new Error(res.status);
-    localStorage.setItem('lexiprof_fallback', JSON.stringify(definitions));
-  } catch(e) {
-    console.warn('Sauvegarde échouée', e);
-    showToast('⚠️ Erreur de sauvegarde en ligne.');
-  }
-}
-
-function nextId() {
-  return definitions.length > 0 ? Math.max(...definitions.map(d => d.id)) + 1 : 1;
-}
-
-function getPassword() {
-  return localStorage.getItem(PWD_KEY) || DEFAULT_PW;
-}
-
-// ── UI ────────────────────────────────────────────────────
-function setLoading(on) {
-  if (on) {
-    document.getElementById('cardsContainer').innerHTML = `
-      <div class="empty-state">
-        <div class="icon">⏳</div>
-        <h3>Chargement…</h3>
-        <p>Récupération des définitions en ligne.</p>
-      </div>`;
-  }
-}
-
-function highlight(text, q) {
-  if (!q) return text;
-  const esc = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return text.replace(new RegExp(`(${esc})`, 'gi'), '<mark>$1</mark>');
-}
-
-function render() {
-  const q = searchQuery.toLowerCase().trim();
-  let filtered = definitions;
-  if (currentFilter !== 'all') filtered = filtered.filter(d => d.matiere === currentFilter);
-  if (q) filtered = filtered.filter(d => d.term.toLowerCase().includes(q) || d.def.toLowerCase().includes(q));
-  filtered.sort((a,b) => a.term.localeCompare(b.term, 'fr'));
-
-  const container = document.getElementById('cardsContainer');
-  const info = document.getElementById('resultsInfo');
-
-  info.textContent = (q || currentFilter !== 'all') ? `${filtered.length} résultat${filtered.length !== 1 ? 's' : ''}` : '';
-
-  if (filtered.length === 0) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="icon">🔍</div>
-        <h3>Aucun résultat</h3>
-        <p>Essaie un autre terme ou change le filtre.</p>
-      </div>`;
-    return;
-  }
-
-  container.innerHTML = filtered.map(d => `
+function viewGoals(){
+  return `
+  <details class="add-form">
+    <summary>+ Nouvel objectif</summary>
+    <form data-form="goal">
+      <label class="field"><span>Titre</span><input name="title" required></label>
+      <div class="grid">
+        <label class="field"><span>Cible</span><input name="target" type="number" step="any" required></label>
+        <label class="field"><span>Unité</span><input name="unit" placeholder="€, km, livres…"></label>
+      </div>
+      <button class="btn" type="submit">Ajouter</button>
+    </form>
+  </details>
+  ${data.goals.length ? data.goals.map(g=>{
+    const cur = Number(g.current)||0, tar = Number(g.target)||0;
+    const pct = tar>0 ? Math.min(100, (cur/tar)*100) : 0;
+    const cls = pct>=100?'green':pct>=60?'':'warn';
+    return `
     <div class="card">
-      <div class="card-top">
-        <div class="card-term">${highlight(d.term, q)}</div>
-        <span class="matiere-badge badge-${d.matiere}">${d.matiere}</span>
+      <div class="row between">
+        <div>
+          <div style="font-weight:700">${esc(g.title)}</div>
+          <div class="muted">${cur} / ${tar} ${esc(g.unit||'')} · ${Math.round(pct)}%</div>
+        </div>
+        <button class="icon-btn" data-action="goal-del" data-id="${g.id}">🗑</button>
       </div>
-      <div class="card-def">${highlight(d.def, q)}</div>
-    </div>
-  `).join('');
+      <div class="bar ${cls}"><div style="width:${pct}%"></div></div>
+      <form data-form="goal-update" data-id="${g.id}" style="display:flex;gap:6px;margin-top:10px">
+        <input name="amount" type="number" step="any" placeholder="+ / −" style="flex:1">
+        <button class="btn small" type="submit">Ajouter</button>
+      </form>
+    </div>`;
+  }).join('') : '<div class="empty">Aucun objectif</div>'}`;
 }
 
-function onSearch() {
-  searchQuery = document.getElementById('searchInput').value;
-  render();
-}
-
-function setFilter(filter, btn) {
-  currentFilter = filter;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  render();
-}
-
-// ── PASSWORD ──────────────────────────────────────────────
-function openAdmin() {
-  document.getElementById('pwdInput').value = '';
-  document.getElementById('pwdError').textContent = '';
-  document.getElementById('pwdInput').classList.remove('error');
-  document.getElementById('pwdOverlay').classList.add('open');
-  setTimeout(() => document.getElementById('pwdInput').focus(), 150);
-}
-
-function closePwdModal() {
-  document.getElementById('pwdOverlay').classList.remove('open');
-}
-
-function checkPassword() {
-  const val = document.getElementById('pwdInput').value;
-  if (val === getPassword()) {
-    closePwdModal();
-    openAdminPanel();
-  } else {
-    const f = document.getElementById('pwdInput');
-    document.getElementById('pwdError').textContent = 'Mot de passe incorrect.';
-    f.classList.add('error');
-    f.value = '';
-    setTimeout(() => f.classList.remove('error'), 400);
-  }
-}
-
-// ── ADMIN ─────────────────────────────────────────────────
-function openAdminPanel() {
-  renderAdminList();
-  document.getElementById('changePwdForm').classList.remove('open');
-  document.getElementById('overlay').classList.add('open');
-}
-
-function closeAdmin() {
-  document.getElementById('overlay').classList.remove('open');
-}
-
-function handleOverlayClick(e) {
-  if (e.target === document.getElementById('overlay')) closeAdmin();
-}
-
-function renderAdminList() {
-  const list = document.getElementById('adminList');
-  document.getElementById('adminCount').textContent = definitions.length;
-  const sorted = [...definitions].sort((a,b) => a.term.localeCompare(b.term, 'fr'));
-
-  if (!sorted.length) {
-    list.innerHTML = '<p style="color:var(--text-muted);font-size:13px;text-align:center;padding:16px 0">Aucune définition.</p>';
-    return;
-  }
-
-  list.innerHTML = sorted.map(d => `
-    <div class="admin-item">
-      <div>
-        <div class="admin-item-term">${d.term}</div>
-        <div class="admin-item-meta">${d.matiere}</div>
+function viewBudget(){
+  const tb = data.envelopes.reduce((s,e)=>s+Number(e.budget||0),0);
+  const ts = data.envelopes.reduce((s,e)=>s+Number(e.spent||0),0);
+  return `
+  <div class="totals">
+    <div class="stat"><div class="l">Budget total</div><div class="v">${money(tb)}</div></div>
+    <div class="stat"><div class="l">Dépensé</div><div class="v" style="color:${ts>tb?'var(--red)':'var(--green)'}">${money(ts)}</div></div>
+  </div>
+  <details class="add-form">
+    <summary>+ Nouvelle enveloppe</summary>
+    <form data-form="envelope">
+      <label class="field"><span>Nom</span><input name="name" required placeholder="Courses, loisirs…"></label>
+      <label class="field"><span>Budget (€)</span><input name="budget" type="number" step="0.01" required></label>
+      <button class="btn" type="submit">Ajouter</button>
+    </form>
+  </details>
+  ${data.envelopes.length ? data.envelopes.map(e=>{
+    const b = Number(e.budget)||0, s = Number(e.spent)||0;
+    const pct = b>0 ? Math.min(100, (s/b)*100) : 0;
+    const cls = s>b ? 'danger' : pct>80 ? 'warn' : 'green';
+    const exps = (e.expenses||[]).slice(-3).reverse();
+    return `
+    <div class="card">
+      <div class="row between">
+        <div>
+          <div style="font-weight:700">${esc(e.name)}</div>
+          <div class="muted">${money(s)} / ${money(b)} · reste ${money(b-s)}</div>
+        </div>
+        <button class="icon-btn" data-action="env-del" data-id="${e.id}">🗑</button>
       </div>
-      <button class="btn-del" onclick="deleteDefinition(${d.id})">✕</button>
-    </div>
-  `).join('');
+      <div class="bar ${cls}"><div style="width:${pct}%"></div></div>
+      <details style="margin-top:10px">
+        <summary class="btn small ghost act">+ Dépense</summary>
+        <form data-form="expense" data-id="${e.id}" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+          <input name="amount" type="number" step="0.01" placeholder="Montant €" required style="flex:1;min-width:110px">
+          <input name="label" placeholder="Libellé" style="flex:2;min-width:140px">
+          <button class="btn small" type="submit">OK</button>
+        </form>
+      </details>
+      ${exps.length?`<div class="muted" style="margin-top:8px;font-size:12px;line-height:1.6">${exps.map(x=>`• ${esc(x.label||'dépense')} — ${money(x.amount)} <span style="opacity:.6">${fmtDate(x.date)}</span>`).join('<br>')}</div>`:''}
+    </div>`;
+  }).join('') : '<div class="empty">Aucune enveloppe</div>'}`;
 }
 
-async function addDefinition() {
-  const term = document.getElementById('formTerm').value.trim();
-  const matiere = document.getElementById('formMatiere').value;
-  const def = document.getElementById('formDef').value.trim();
-  if (!term || !def) { showToast('⚠️ Remplis le terme et la définition !'); return; }
-  if (definitions.find(d => d.term.toLowerCase() === term.toLowerCase() && d.matiere === matiere)) {
-    showToast('⚠️ Ce terme existe déjà.'); return;
+function viewCar(){
+  const info = data.car.info || {};
+  const entries = [...(data.car.entries||[])].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const total = entries.reduce((s,e)=>s+Number(e.cost||0),0);
+  const lastKm = entries.find(e => e.km)?.km;
+  const types = { vidange:'🛢️ Vidange', revision:'🔧 Révision', pneus:'🛞 Pneus', ct:'📋 Contrôle technique', reparation:'🔨 Réparation', autre:'📌 Autre' };
+  return `
+  <div class="card">
+    <h3>🚗 Informations véhicule</h3>
+    <form data-form="car-info">
+      <div class="grid">
+        <label class="field"><span>Marque</span><input name="make" value="${esc(info.make||'')}"></label>
+        <label class="field"><span>Modèle</span><input name="model" value="${esc(info.model||'')}"></label>
+      </div>
+      <div class="grid">
+        <label class="field"><span>Plaque</span><input name="plate" value="${esc(info.plate||'')}"></label>
+        <label class="field"><span>Année</span><input name="year" value="${esc(info.year||'')}"></label>
+      </div>
+      <button class="btn small" type="submit">Enregistrer</button>
+    </form>
+  </div>
+  <div class="totals">
+    <div class="stat"><div class="l">Total dépenses</div><div class="v">${money(total)}</div></div>
+    <div class="stat"><div class="l">Dernier km</div><div class="v">${lastKm?num(lastKm):'—'}</div></div>
+  </div>
+  <details class="add-form">
+    <summary>+ Entretien / dépense</summary>
+    <form data-form="car-entry">
+      <div class="grid">
+        <label class="field"><span>Date</span><input type="date" name="date" value="${today()}" required></label>
+        <label class="field"><span>Kilométrage</span><input type="number" name="km" placeholder="ex: 85000"></label>
+      </div>
+      <div class="grid">
+        <label class="field"><span>Type</span>
+          <select name="type">
+            ${Object.entries(types).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}
+          </select>
+        </label>
+        <label class="field"><span>Coût (€)</span><input type="number" step="0.01" name="cost" placeholder="0"></label>
+      </div>
+      <label class="field"><span>Notes</span><input name="notes" placeholder="Garage, détails…"></label>
+      <button class="btn" type="submit">Ajouter</button>
+    </form>
+  </details>
+  ${entries.length ? entries.map(e=>`
+    <div class="item">
+      <div class="row between">
+        <div>
+          <div class="title">${types[e.type] || esc(e.type)}</div>
+          <div class="meta">
+            ${fmtDate(e.date)}
+            ${e.km?' · '+num(e.km)+' km':''}
+            ${e.cost?' · '+money(e.cost):''}
+          </div>
+          ${e.notes?`<div class="meta">${esc(e.notes)}</div>`:''}
+        </div>
+        <button class="icon-btn" data-action="car-del" data-id="${e.id}">🗑</button>
+      </div>
+    </div>`).join('') : '<div class="empty">Aucune entrée</div>'}`;
+}
+
+function viewMedia(){
+  const f = state.mediaFilter;
+  const labels = { a_voir:'À voir', en_cours:'En cours', vu:'Vu' };
+  const list = data.media.filter(m => f==='all' || m.status===f);
+  return `
+  <div class="row wrap" style="margin-bottom:12px;gap:6px">
+    ${['all','a_voir','en_cours','vu'].map(k=>`
+      <button class="btn ${f===k?'':'ghost'} small" data-action="media-filter" data-filter="${k}">
+        ${k==='all'?'Tous':labels[k]} (${k==='all'?data.media.length:data.media.filter(m=>m.status===k).length})
+      </button>`).join('')}
+  </div>
+  <details class="add-form">
+    <summary>+ Nouveau film / série</summary>
+    <form data-form="media">
+      <label class="field"><span>Titre</span><input name="title" required></label>
+      <div class="grid">
+        <label class="field"><span>Type</span>
+          <select name="type"><option value="film">Film</option><option value="serie">Série</option></select>
+        </label>
+        <label class="field"><span>Statut</span>
+          <select name="status">
+            <option value="a_voir" selected>À voir</option>
+            <option value="en_cours">En cours</option>
+            <option value="vu">Vu</option>
+          </select>
+        </label>
+      </div>
+      <label class="field"><span>Notes</span><textarea name="notes" rows="2"></textarea></label>
+      <button class="btn" type="submit">Ajouter</button>
+    </form>
+  </details>
+  ${list.length ? list.map(m=>`
+    <div class="item">
+      <div class="row between">
+        <div style="flex:1">
+          <div class="title">${m.type==='serie'?'📺':'🎬'} ${esc(m.title)}</div>
+          <div class="meta">${labels[m.status]}${m.rating?' · '+ '★'.repeat(m.rating)+'☆'.repeat(5-m.rating):''}</div>
+          ${m.notes?`<div class="meta">${esc(m.notes)}</div>`:''}
+          <div class="stars" data-action="media-rate" data-id="${m.id}" style="margin-top:6px">
+            ${[1,2,3,4,5].map(n=>`<span class="${n<=(m.rating||0)?'on':'off'}" data-rate="${n}">★</span>`).join('')}
+          </div>
+        </div>
+        <button class="icon-btn" data-action="media-del" data-id="${m.id}">🗑</button>
+      </div>
+      <div class="actions">
+        ${m.status!=='a_voir' ? `<button class="btn ghost small" data-action="media-status" data-id="${m.id}" data-status="a_voir">↩ À voir</button>`:''}
+        ${m.status!=='en_cours'? `<button class="btn ghost small" data-action="media-status" data-id="${m.id}" data-status="en_cours">▶ En cours</button>`:''}
+        ${m.status!=='vu' ? `<button class="btn green small" data-action="media-status" data-id="${m.id}" data-status="vu">✓ Vu</button>`:''}
+      </div>
+    </div>`).join('') : '<div class="empty">Rien ici</div>'}`;
+}
+
+function viewTemplates(){
+  return `
+  <details class="add-form">
+    <summary>+ Nouveau template</summary>
+    <form data-form="template">
+      <label class="field"><span>Nom</span><input name="name" required></label>
+      <label class="field"><span>Contenu</span><textarea name="body" rows="6" required></textarea></label>
+      <button class="btn" type="submit">Ajouter</button>
+    </form>
+  </details>
+  ${data.templates.length ? data.templates.map(t=>`
+    <div class="card">
+      <div class="row between" style="margin-bottom:8px">
+        <div style="font-weight:700">${esc(t.name)}</div>
+        <button class="icon-btn" data-action="template-del" data-id="${t.id}">🗑</button>
+      </div>
+      <pre style="white-space:pre-wrap;font-family:inherit;font-size:13px;color:var(--muted);margin:0 0 10px;max-height:180px;overflow:auto">${esc(t.body)}</pre>
+      <button class="btn small" data-action="template-copy" data-id="${t.id}">📋 Copier</button>
+    </div>`).join('') : '<div class="empty">Aucun template</div>'}`;
+}
+
+/* ============ Events ============ */
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-action], [data-nav]');
+  if(!t) return;
+  if(t.dataset.nav){ state.view = t.dataset.nav; render(); return; }
+
+  const a = t.dataset.action;
+  const id = t.dataset.id;
+
+  switch(a){
+    case 'task-filter': state.taskFilter = t.dataset.filter; render(); break;
+    case 'media-filter': state.mediaFilter = t.dataset.filter; render(); break;
+    case 'task-status': {
+      const x = data.tasks.find(o=>o.id===id);
+      if(x){ x.status = t.dataset.status; save(); render(); }
+      break;
+    }
+    case 'task-del': data.tasks = data.tasks.filter(o=>o.id!==id); save(); render(); break;
+    case 'cal-prev': {
+      state.calMonth--;
+      if(state.calMonth<0){ state.calMonth=11; state.calYear--; }
+      state.selectedDay = `${state.calYear}-${String(state.calMonth+1).padStart(2,'0')}-01`;
+      render(); break;
+    }
+    case 'cal-next': {
+      state.calMonth++;
+      if(state.calMonth>11){ state.calMonth=0; state.calYear++; }
+      state.selectedDay = `${state.calYear}-${String(state.calMonth+1).padStart(2,'0')}-01`;
+      render(); break;
+    }
+    case 'cal-select': state.selectedDay = t.dataset.date; render(); break;
+    case 'event-del': data.events = data.events.filter(o=>o.id!==id); save(); render(); break;
+    case 'goal-del': data.goals = data.goals.filter(o=>o.id!==id); save(); render(); break;
+    case 'env-del': data.envelopes = data.envelopes.filter(o=>o.id!==id); save(); render(); break;
+    case 'car-del': data.car.entries = data.car.entries.filter(o=>o.id!==id); save(); render(); break;
+    case 'media-del': data.media = data.media.filter(o=>o.id!==id); save(); render(); break;
+    case 'media-status': {
+      const x = data.media.find(o=>o.id===id);
+      if(x){ x.status = t.dataset.status; save(); render(); }
+      break;
+    }
+    case 'media-rate': {
+      const r = Number(e.target.dataset.rate);
+      if(!r) return;
+      const x = data.media.find(o=>o.id===id);
+      if(x){ x.rating = (x.rating===r) ? 0 : r; save(); render(); }
+      break;
+    }
+    case 'template-del': data.templates = data.templates.filter(o=>o.id!==id); save(); render(); break;
+    case 'template-copy': {
+      const x = data.templates.find(o=>o.id===id);
+      if(x){
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(x.body).then(()=>toast('Copié !')).catch(()=>toast('Copie impossible'));
+        } else toast('Copie non supportée');
+      }
+      break;
+    }
+    case 'export': exportData(); break;
+    case 'import': importData(); break;
+    case 'reset': {
+      if(confirm('Supprimer TOUTES les données ? Cette action est irréversible.')){
+        data = clone(defaultData);
+        save();
+        render();
+        toast('Réinitialisé');
+      }
+      break;
+    }
   }
-  definitions.push({ id: nextId(), term, matiere, def });
-  showToast('⏳ Sauvegarde…');
-  await saveRemote();
-  render(); renderAdminList();
-  document.getElementById('formTerm').value = '';
-  document.getElementById('formDef').value = '';
-  showToast('✅ Définition ajoutée !');
+});
+
+document.addEventListener('submit', e => {
+  const form = e.target.closest('form[data-form]');
+  if(!form) return;
+  e.preventDefault();
+  const type = form.dataset.form;
+  const fd = new FormData(form);
+  const g = k => String(fd.get(k) ?? '').trim();
+
+  switch(type){
+    case 'task':
+      data.tasks.push({ id:uid(), title:g('title'), project:g('project'),
+        priority:g('priority')||'normale', due:g('due'), status:g('status')||'todo', createdAt:Date.now() });
+      break;
+    case 'event':
+      data.events.push({ id:uid(), title:g('title'), date:g('date'), time:g('time'), notes:g('notes') });
+      break;
+    case 'goal':
+      data.goals.push({ id:uid(), title:g('title'), target:Number(g('target'))||0, current:0, unit:g('unit') });
+      break;
+    case 'goal-update': {
+      const x = data.goals.find(o=>o.id===form.dataset.id);
+      if(x) x.current = (Number(x.current)||0) + (Number(g('amount'))||0);
+      break;
+    }
+    case 'envelope':
+      data.envelopes.push({ id:uid(), name:g('name'), budget:Number(g('budget'))||0, spent:0, expenses:[] });
+      break;
+    case 'expense': {
+      const env = data.envelopes.find(o=>o.id===form.dataset.id);
+      const amt = Number(g('amount'));
+      if(env && amt){
+        env.spent = (Number(env.spent)||0) + amt;
+        env.expenses = env.expenses || [];
+        env.expenses.push({ id:uid(), amount:amt, label:g('label'), date:today() });
+      }
+      break;
+    }
+    case 'car-info':
+      data.car.info = { make:g('make'), model:g('model'), plate:g('plate'), year:g('year') };
+      break;
+    case 'car-entry':
+      data.car.entries.push({ id:uid(), date:g('date'), km: g('km')?Number(g('km')):null,
+        type:g('type')||'autre', cost: g('cost')?Number(g('cost')):0, notes:g('notes') });
+      break;
+    case 'media':
+      data.media.push({ id:uid(), title:g('title'), type:g('type')||'film',
+        status:g('status')||'a_voir', notes:g('notes'), rating:0 });
+      break;
+    case 'template':
+      data.templates.push({ id:uid(), name:g('name'), body:String(fd.get('body')||'') });
+      break;
+  }
+
+  save();
+  form.reset();
+  const d = form.closest('details');
+  if(d) d.open = false;
+  render();
+  toast('Enregistré');
+});
+
+/* ============ Utils ============ */
+let toastTimer;
+function toast(msg){
+  let el = document.getElementById('toast');
+  if(!el){ el = document.createElement('div'); el.id='toast'; el.className='toast'; document.body.appendChild(el); }
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove('show'), 1600);
 }
 
-async function deleteDefinition(id) {
-  if (!confirm('Supprimer cette définition ?')) return;
-  definitions = definitions.filter(d => d.id !== id);
-  await saveRemote();
-  render(); renderAdminList();
-  showToast('🗑 Définition supprimée.');
+function exportData(){
+  const blob = new Blob([JSON.stringify(data,null,2)], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `perso-${today()}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+  toast('Exporté');
 }
 
-function toggleChangePwd() {
-  document.getElementById('changePwdForm').classList.toggle('open');
+function importData(){
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = 'application/json';
+  inp.onchange = () => {
+    const file = inp.files && inp.files[0];
+    if(!file) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try {
+        const parsed = JSON.parse(String(r.result));
+        data = Object.assign(clone(defaultData), parsed);
+        save(); render(); toast('Importé');
+      } catch { toast('Fichier invalide'); }
+    };
+    r.readAsText(file);
+  };
+  inp.click();
 }
 
-function changePassword() {
-  const p1 = document.getElementById('newPwd1').value;
-  const p2 = document.getElementById('newPwd2').value;
-  if (!p1 || p1.length < 4) { showToast('⚠️ Minimum 4 caractères.'); return; }
-  if (p1 !== p2) { showToast('⚠️ Les mots de passe ne correspondent pas.'); return; }
-  localStorage.setItem(PWD_KEY, p1);
-  document.getElementById('newPwd1').value = '';
-  document.getElementById('newPwd2').value = '';
-  document.getElementById('changePwdForm').classList.remove('open');
-  showToast('🔑 Mot de passe mis à jour !');
+/* ============ Init ============ */
+function initTabbar(){
+  const tabs = [
+    ['dashboard','🏠','Accueil'],
+    ['tasks','✅','Tâches'],
+    ['calendar','📅','Agenda'],
+    ['goals','🎯','Objectifs'],
+    ['budget','💶','Budget'],
+    ['car','🚗','Voiture'],
+    ['media','🎬','Médias'],
+    ['templates','📝','Templates']
+  ];
+  const bar = document.querySelector('nav.tabbar');
+  bar.innerHTML = tabs.map(([v,i,l])=>`<button data-view="${v}"><span class="ico">${i}</span><span>${l}</span></button>`).join('');
+  bar.addEventListener('click', e => {
+    const b = e.target.closest('button[data-view]');
+    if(b){ state.view = b.dataset.view; render(); window.scrollTo({top:0}); }
+  });
 }
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(t._t);
-  t._t = setTimeout(() => t.classList.remove('show'), 2500);
+function setupPWA(){
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="40" fill="#0b1220"/><circle cx="96" cy="96" r="66" fill="none" stroke="#38bdf8" stroke-width="6"/><text x="96" y="128" font-size="96" font-family="-apple-system,system-ui,sans-serif" font-weight="800" text-anchor="middle" fill="#38bdf8">P</text></svg>`;
+  const icon = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+
+  document.getElementById('favicon').href = icon;
+  document.getElementById('apple-icon').href = icon;
+
+  const manifest = {
+    name: 'Perso — Tableau de bord',
+    short_name: 'Perso',
+    description: 'App perso tout-en-un : tâches, agenda, objectifs, budget, voiture, médias, templates.',
+    start_url: '.',
+    scope: '.',
+    display: 'standalone',
+    orientation: 'portrait',
+    background_color: '#0b1220',
+    theme_color: '#0b1220',
+    icons: [
+      { src: icon, sizes: '192x192', type: 'image/svg+xml', purpose: 'any' },
+      { src: icon, sizes: '512x512', type: 'image/svg+xml', purpose: 'any' },
+      { src: icon, sizes: 'any', type: 'image/svg+xml', purpose: 'maskable' }
+    ]
+  };
+  const mb = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+  document.getElementById('manifest-link').href = URL.createObjectURL(mb);
+
+  // Tentative best-effort d'enregistrer un service worker (certains navigateurs refusent depuis un blob)
+  if('serviceWorker' in navigator){
+    const sw = "self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));self.addEventListener('fetch',()=>{});";
+    try {
+      const sb = new Blob([sw], { type: 'application/javascript' });
+      navigator.serviceWorker.register(URL.createObjectURL(sb)).catch(()=>{});
+    } catch(_){}
+  }
 }
 
-load();
+initTabbar();
+setupPWA();
+render();
 </script>
 </body>
 </html>
